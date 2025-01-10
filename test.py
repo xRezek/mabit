@@ -37,7 +37,7 @@ def on_message(client, userdata, msg):
       mysql_cursor.execute(sql_unique_machineid_query, unique_value)
       result = mysql_cursor.fetchone()
 
-      if DATA["Alarm"]["message"] is not None:
+      if DATA["Alarm"]["message"] != "":
         sql_insert_query_alarmy = "INSERT INTO alarmy(alarmId, machineId, message, code, timestamp) VALUES (NULL, %s, %s, %s, CURRENT_TIMESTAMP)"
         alarm_values = (DATA["MachineID"], DATA["Alarm"]["message"], DATA["Alarm"]["code"])
         mysql_cursor.execute(sql_insert_query_alarmy, alarm_values)
@@ -46,7 +46,7 @@ def on_message(client, userdata, msg):
       else:
         print("Alarm not inserted")
 
-      if DATA["Event"]["message"] is not None:
+      if DATA["Event"]["message"] != "":
         sql_insert_query_events = "INSERT INTO events(eventId, machineId, code, message, timestamp) VALUES (NULL, %s, %s, %s, CURRENT_TIMESTAMP)"
         events_values = (DATA["MachineID"], DATA["Event"]["code"], DATA["Event"]["message"])
         mysql_cursor.execute(sql_insert_query_events, events_values)
@@ -60,6 +60,11 @@ def on_message(client, userdata, msg):
       mysql_cursor.execute(sql_insert_query_product, product_values)
       connection.commit()
 
+      sql_insert_machine_status = "INSERT INTO machine_status(machineID, mode, isOn, timestamp) VALUES (%s, %s, %s, CURRENT_TIMESTAMP)"
+      machines_status_values = (DATA["MachineID"], DATA["MachineStatus"][0], DATA["MachineStatus"][1])
+      mysql_cursor.execute(sql_insert_machine_status, machines_status_values)
+      connection.commit()
+      print("Machine status inserted successfully")
 
       if result[0] > 0:
         print("Record already exists")
@@ -75,10 +80,11 @@ def on_message(client, userdata, msg):
         else:
           print("Record not inserted")
 
-        
+        mysql_cursor.close()
         connection.close()
     else:
       print("Connection failed")
+
 
 # MQTT client setup
 mqttc = mqtt.Client(mqtt.CallbackAPIVersion.VERSION2)

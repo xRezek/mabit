@@ -12,11 +12,12 @@ def on_connect(client, userdata, flags, reason_code, properties):
 # The callback for when a PUBLISH message is received from the server.
 def on_message(client, userdata, msg):
   # Parsing a JSON payload data.
-  DATA = json.loads(msg.payload)
-  print(DATA["MachineID"])
-  print(DATA["OperatorID"])
-  print(DATA["MachineStatus"])
-  print(DATA["Alarm"]["code"])
+  try:
+    DATA = json.loads(msg.payload)
+  except json.JSONDecodeError:
+    print("Invalid JSON payload")
+    return
+  
   print("\n\n\n")
 
   if DATA is not None:
@@ -30,12 +31,6 @@ def on_message(client, userdata, msg):
     if connection.is_connected():
       print("Connected to MySQL Server")
       mysql_cursor = connection.cursor()
-
-      sql_unique_machineid_query = "SELECT COUNT(*) FROM maszyny WHERE machineId = %s"
-      unique_value = (DATA["MachineID"],)
-
-      mysql_cursor.execute(sql_unique_machineid_query, unique_value)
-      result = mysql_cursor.fetchone()
 
       if DATA["Alarm"]["message"] != "":
         sql_insert_query_alarmy = "INSERT INTO alarmy(alarmId, machineId, message, code, timestamp) VALUES (NULL, %s, %s, %s, CURRENT_TIMESTAMP)"
@@ -55,28 +50,46 @@ def on_message(client, userdata, msg):
       else:
         print("Event not inserted")
       
-      sql_insert_query_product = "INSERT INTO produkty (id, machineId, status, program, cycletime) VALUES (%s, %s, %s, %s, %s)"
-      product_values = (DATA["product"]["ID"], DATA["MachineID"], DATA["product"]["Status"], DATA["product"]["Serial"], DATA["product"]["CycleTime"])
-      mysql_cursor.execute(sql_insert_query_product, product_values)
-      connection.commit()
+      if DATA["product"]["Comment"] != "":
+        sql_insert_query_product = "INSERT INTO produkty (id, machineId, status, program, cycletime, progress, timestamp) VALUES (%s, %s, %s, %s, %s, %s, CURRENT_TIMESTAMP)"
+        product_values = (DATA["product"]["ID"], DATA["MachineID"], DATA["product"]["Status"], DATA["product"]["Serial"], DATA["product"]["CycleTime"], DATA["product"]["Comment"]["PROGRESS"])
+        mysql_cursor.execute(sql_insert_query_product, product_values)
+        connection.commit()
+        print("Product inserted successfully")
+      else:
+        print("Product not inserted")
+
+
+      sql_last_machine_status = "SELECT mode, isOn, timestamp FROM machine_status WHERE machineID = %s ORDER BY timestamp DESC LIMIT 1"
+      machine_last_status_values = (DATA["MachineID"],)
+      mysql_cursor.execute(sql_is_same_status, value_is_same_status)
+      result_is_same_status = mysql_cursor.fetchone()
+      if result_is_same_status[1] == DATA["MachineStatus"][1]:
+        time_diff = result_is_same_status[2] - DATA["MachineStatus"][2]
+      #todo: implementacja obliczania czasu pracy maszyny
 
       sql_insert_machine_status = "INSERT INTO machine_status(machineID, mode, isOn, timestamp) VALUES (%s, %s, %s, CURRENT_TIMESTAMP)"
+      
       machines_status_values = (DATA["MachineID"], DATA["MachineStatus"][0], DATA["MachineStatus"][1])
       mysql_cursor.execute(sql_insert_machine_status, machines_status_values)
       connection.commit()
       print("Machine status inserted successfully")
 
-      if result[0] > 0:
-        print("Record already exists")
+      sql_unique_machineid_query = "SELECT COUNT(*) FROM maszyny WHERE machineId = %s"
+      unique_value = (DATA["MachineID"],)
+      mysql_cursor.execute(sql_unique_machineid_query, unique_value)
+      result_unique = mysql_cursor.fetchone()
+
+      if result_unique[0] > 0:
+        print("Machine already exists")
       else:
-        
         sql_insert_query_maszyny = "INSERT INTO maszyny (id, machineId, operatorId) VALUES (NULL, %s, %s)"
         values = (DATA["MachineID"], DATA["OperatorID"])
         mysql_cursor.execute(sql_insert_query_maszyny, values)
         connection.commit()
 
         if mysql_cursor.rowcount > 0:
-          print("Record inserted successfully")
+          print("Record inserted successfully to maszyny")
         else:
           print("Record not inserted")
 

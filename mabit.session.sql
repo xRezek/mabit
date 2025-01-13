@@ -1,30 +1,24 @@
 --*Zapytania SQL do obliczenia wskaźnika OEE
 
 SELECT 
-  (round(count(CASE WHEN status = 1 THEN 1 END)/COUNT(*),2)) AS Jakość
+  (round(count(CASE WHEN status = 1 THEN 1 END)/COUNT(CASE WHEN status != 4 AND status != 0 THEN 1 END),2)) AS Jakość,
+  CONCAT(EXTRACT(DAY FROM timestamp),'-',EXTRACT(MONTH FROM timestamp)) AS work_date
 FROM 
-  produkty;
+  produkty
+WHERE machineId = '1103_05_UA'
+GROUP BY EXTRACT(DAY FROM timestamp);
 
 
--- SELECT timestamp
--- FROM machine_status
--- WHERE isOn = 1
-
-SELECT 
-    t1.machineId,
-    t1.timestamp AS current_timestamp,
-    t1.isOn,
-    (
-        SELECT MIN(t2.timestamp)
-        FROM machine_status t2
-        WHERE t2.machineId = t1.machineId AND t2.timestamp > t1.timestamp
-    ) AS next_timestamp
-FROM 
-    machine_status t1
-WHERE 
-    t1.machineId = '1103_05_UA';
-
---!fixit: Zapytanie nie działa poprawnie
+-- SELECT EXTRACT(DAY FROM TIMESTAMP) AS work_day,
+--  SEC_TO_TIME(SUM(TIMESTAMPDIFF(SECOND, TIMESTAMP, next_timestamp))) AS total_work_time
+-- FROM (
+--   SELECT TIMESTAMP,
+--             LEAD(TIMESTAMP) OVER (PARTITION BY EXTRACT(DAY FROM TIMESTAMP) ORDER BY TIMESTAMP) AS next_timestamp
+--         FROM machine_status WHERE isOn = 1 AND machineId = "1103_05_UA"
+--      ) AS derived_table
+-- WHERE next_timestamp IS NOT NULL
+-- GROUP BY work_day
+-- ORDER BY work_day DESC;
 
 --todo: Napisz zapytanie, które zwróci wskaznik wydajności dla maszyny 1103_05_UA
 

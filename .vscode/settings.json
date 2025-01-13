@@ -1,0 +1,32 @@
+{
+  "sqltools.connections": [
+    {
+      "mysqlOptions": {
+        "authProtocol": "default",
+        "enableSsl": "Disabled"
+      },
+      "previewLimit": 50,
+      "server": "sql7.freesqldatabase.com",
+      "port": 3306,
+      "driver": "MySQL",
+      "name": "mabit_laptop",
+      "username": "sql7756592",
+      "database": "sql7756592",
+      "password": "3pUyiJRjCG"
+    },
+    {
+      "mysqlOptions": {
+        "authProtocol": "default",
+        "enableSsl": "Disabled"
+      },
+      "previewLimit": 50,
+      "server": "192.168.0.12",
+      "port": 3306,
+      "driver": "MySQL",
+      "name": "mabit_laptop_local",
+      "database": "student",
+      "username": "student",
+      "password": "praktyki"
+    }
+  ]
+}

@@ -62,7 +62,7 @@ def on_message(client, userdata, msg):
 
       sql_last_machine_status = "SELECT mode, isOn, timestamp FROM machine_status WHERE machineID = %s ORDER BY timestamp DESC LIMIT 1"
       machine_last_status_values = (DATA["MachineID"],)
-      mysql_cursor.execute(sql_is_same_status, value_is_same_status)
+      #mysql_cursor.execute(sql_is_same_status, value_is_same_status)
       result_is_same_status = mysql_cursor.fetchone()
       if result_is_same_status[1] == DATA["MachineStatus"][1]:
         time_diff = result_is_same_status[2] - DATA["MachineStatus"][2]

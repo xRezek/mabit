@@ -59,21 +59,14 @@ def on_message(client, userdata, msg):
       else:
         print("Product not inserted")
 
-
-      sql_last_machine_status = "SELECT mode, isOn, timestamp FROM machine_status WHERE machineID = %s ORDER BY timestamp DESC LIMIT 1"
-      machine_last_status_values = (DATA["MachineID"],)
-      #mysql_cursor.execute(sql_is_same_status, value_is_same_status)
-      result_is_same_status = mysql_cursor.fetchone()
-      if result_is_same_status[1] == DATA["MachineStatus"][1]:
-        time_diff = result_is_same_status[2] - DATA["MachineStatus"][2]
-      #todo: implementacja obliczania czasu pracy maszyny
-
-      sql_insert_machine_status = "INSERT INTO machine_status(machineID, mode, isOn, timestamp) VALUES (%s, %s, %s, CURRENT_TIMESTAMP)"
-      
-      machines_status_values = (DATA["MachineID"], DATA["MachineStatus"][0], DATA["MachineStatus"][1])
-      mysql_cursor.execute(sql_insert_machine_status, machines_status_values)
-      connection.commit()
-      print("Machine status inserted successfully")
+      if DATA["MachineStatus"][1] == 1:
+        sql_insert_machine_status = "INSERT INTO machine_status(machineId, mode, isOn, timestamp) VALUES (%s, %s, %s, CURRENT_TIMESTAMP)"
+        machines_status_values = (DATA["MachineID"], DATA["MachineStatus"][0], DATA["MachineStatus"][1])
+        mysql_cursor.execute(sql_insert_machine_status, machines_status_values)
+        connection.commit()
+        print("Machine status inserted successfully")
+      else:
+        print("Machine status not inserted")
 
       sql_unique_machineid_query = "SELECT COUNT(*) FROM maszyny WHERE machineId = %s"
       unique_value = (DATA["MachineID"],)

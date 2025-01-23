@@ -1,6 +1,8 @@
 import paho.mqtt.client as mqtt
 import mysql.connector as mysql
 import json
+import schedule
+import time
 
 # The callback for when the client receives a CONNACK response from the server.
 def on_connect(client, userdata, flags, reason_code, properties):
@@ -16,6 +18,7 @@ def on_message(client, userdata, msg):
     DATA = json.loads(msg.payload)
   except json.JSONDecodeError:
     print("Invalid JSON payload")
+    print("Payload: ", msg.payload)
     return
   
   print("\n\n\n")
@@ -59,39 +62,42 @@ def on_message(client, userdata, msg):
       else:
         print("Product not inserted")
 
-      if DATA["MachineStatus"][1] == 1:
-        sql_insert_machine_status = "INSERT INTO machine_status(machineId, mode, isOn, timestamp) VALUES (%s, %s, %s, CURRENT_TIMESTAMP)"
-        machines_status_values = (DATA["MachineID"], DATA["MachineStatus"][0], DATA["MachineStatus"][1])
-        mysql_cursor.execute(sql_insert_machine_status, machines_status_values)
+      if DATA["MachineStatus"][0]:
+        sql_insert_query_machine_status = "INSERT INTO machine_status (machineId, isOn, timestamp) VALUES (%s, %s, CURRENT_TIMESTAMP)"
+        machine_status_values = (DATA["MachineID"], DATA["MachineStatus"][0])
+        mysql_cursor.execute(sql_insert_query_machine_status, machine_status_values)
         connection.commit()
         print("Machine status inserted successfully")
-      else:
-        print("Machine status not inserted")
 
-      sql_unique_machineid_query = "SELECT COUNT(*) FROM maszyny WHERE machineId = %s"
-      unique_value = (DATA["MachineID"],)
-      mysql_cursor.execute(sql_unique_machineid_query, unique_value)
-      result_unique = mysql_cursor.fetchone()
+      if DATA["OperatorID"] != "" or None:
+        sql_unique_machineid_query = "SELECT COUNT(*) FROM maszyny WHERE machineId = %s"
+        unique_value = (DATA["MachineID"],)
+        mysql_cursor.execute(sql_unique_machineid_query, unique_value)
+        result_unique = mysql_cursor.fetchone()
 
-      if result_unique[0] > 0:
-        print("Machine already exists")
-      else:
-        sql_insert_query_maszyny = "INSERT INTO maszyny (id, machineId, operatorId) VALUES (NULL, %s, %s)"
-        values = (DATA["MachineID"], DATA["OperatorID"])
-        mysql_cursor.execute(sql_insert_query_maszyny, values)
-        connection.commit()
-
-        if mysql_cursor.rowcount > 0:
-          print("Record inserted successfully to maszyny")
+        if result_unique[0] > 0:
+          print("Machine already exists")
         else:
-          print("Record not inserted")
+          sql_insert_query_maszyny = "INSERT INTO maszyny (id, machineId, operatorId) VALUES (NULL, %s, %s)"
+          values = (DATA["MachineID"], DATA["OperatorID"])
+          mysql_cursor.execute(sql_insert_query_maszyny, values)
+          connection.commit()
 
-        mysql_cursor.close()
-        connection.close()
+          if mysql_cursor.rowcount > 0:
+            print("Record inserted successfully to maszyny")
+          else:
+            print("Record not inserted")
+
     else:
       print("Connection failed")
-
-
+      
+    mysql_cursor.close()
+    connection.close()
+    if not connection.is_connected():
+      print("MySQL connection is closed")
+    else:
+      print("MySQL connection is still open")
+        
 # MQTT client setup
 mqttc = mqtt.Client(mqtt.CallbackAPIVersion.VERSION2)
 mqttc.on_connect = on_connect

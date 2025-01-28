@@ -11,7 +11,7 @@
   }else{
     $sqlQueryGetOEEparams = "SELECT avg(quality), avg(availability), avg(effectiveness) FROM daily_data";
     $sqlGetQuality = "SELECT SUM(OK), SUM(NOK), SUM(ANULOWANY) FROM( SELECT CASE WHEN status = 1 THEN 1 ELSE 0 END AS OK, CASE WHEN status = 2 THEN 1 ELSE 0 END AS NOK, CASE WHEN status = 3 THEN 1 ELSE 0 END AS ANULOWANY FROM produkty) a";
-    $getDataForLinearChart = "SELECT date, quality, ROUND(quality * availability,2) * 100 as OEE FROM daily_data";
+    $getDataForLinearChart = "SELECT date, quality, ROUND(quality * availability,2) * 100 as OEE FROM daily_data WHERE machine_id="."'1103_05_UA';";
 
     $resultArray = $conn->query($sqlQueryGetOEEparams)->fetch_all();
 

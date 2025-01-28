@@ -1,5 +1,15 @@
+const oeeParams = document.querySelectorAll(".oeeParams");
+const oeeValues = Array.from(oeeParams).map(element => element.value);
+
+const qualityParams = document.querySelectorAll(".qualityParams");
+const qualityValues = Array.from(qualityParams).map(element => parseInt(element.value));
+
+const xAxisDate = JSON.parse(document.getElementById('columnData').dataset.json);
+const yAxisOEE = JSON.parse(document.getElementById('columnOEE').dataset.json);
+const yAxisQuality = JSON.parse(document.getElementById('columnQuality').dataset.json);
+
+
 function createIndicator(id, value, title) {
-  // Ustalenie koloru paska na podstawie wartości
   let barColor;
   if (value <= 20) {
     barColor = "red";
@@ -16,11 +26,11 @@ function createIndicator(id, value, title) {
   const data = [{
     type: "indicator",
     mode: "gauge+number",
-    value: value, // Wartość wskaźnika
+    value: value,
     title: { text: title, font: { size: 16 } },
     gauge: {
-      axis: { range: [0, 100] }, // Zakres wskaźnika
-      bar: { color: barColor }, // Pasek zmieniający kolor
+      axis: { range: [0, 100] }, 
+      bar: { color: barColor },
     },
     domain: { x: [0, 1], y: [0, 1] }
   }];
@@ -45,7 +55,7 @@ function createOeeLineChart(id, xData, oeeData, qualityData) {
     marker: { size: 8 }
   };
 
-  // Ślad dla wskaźnika jakości
+
   const qualityTrace = {
     x: xData,
     y: qualityData,
@@ -72,8 +82,8 @@ function createOeeLineChart(id, xData, oeeData, qualityData) {
     width: 900
   };
 
-  const config = { responsive: true }; // Responsywność
-  Plotly.newPlot(id, [oeeTrace, qualityTrace], layout, config); // Dodanie obu serii danych
+  const config = { responsive: true }; 
+  Plotly.newPlot(id, [oeeTrace, qualityTrace], layout, config); 
 }
 
 function createDonutChart(id, goodProducts, badProducts, canceledProducts) {
@@ -82,9 +92,9 @@ function createDonutChart(id, goodProducts, badProducts, canceledProducts) {
     type: 'pie',
     values: [goodProducts, badProducts, canceledProducts],
     labels: ['Dobre', 'Niedobre', 'Anulowane'],
-    textinfo: 'label+percent', // Wyświetla etykiety i procenty
+    textinfo: 'label+percent', 
     marker: {
-      colors: ['#28a745', '#dc3545', '#ffc107'] // Kolory dla sekcji
+      colors: ['#28a745', '#dc3545', '#ffc107']
     }
   }];
 
@@ -96,32 +106,32 @@ function createDonutChart(id, goodProducts, badProducts, canceledProducts) {
     margin: { t: 40, r: 70, b: 40, l: 70 }
   };
 
-  const config = { responsive: true }; // Responsywność
+  const config = { responsive: true }; 
   Plotly.newPlot(id, data, layout, config);
 }
 
 
-// Tworzenie wskaźników
-createIndicator("oeeIndicator", 92, "OEE", "blue");
-createIndicator("qualityIndicator", 85, "Jakość", "green");
-createIndicator("availabilityIndicator", 10, "Dostępność", "orange");
-createIndicator("effectivenessIndicator", 40, "Wydajność", "red");
+
+createIndicator("oeeIndicator", parseInt(oeeValues[0] * oeeValues[1] * oeeValues[2] * 100), "OEE", "blue");
+createIndicator("qualityIndicator", parseInt(oeeValues[0] * 100), "Jakość", "green");
+createIndicator("availabilityIndicator", parseInt(oeeValues[1] * 100), "Dostępność", "orange");
+createIndicator("effectivenessIndicator", parseInt(oeeValues[2] * 100), "Wydajność", "red");
 
 
 
 
-// Tworzenie wykresu liniowego OEE
-const xData = ['2025-01-01', '2025-01-02', '2025-01-03', '2025-01-04', '2025-01-05', '2025-01-06', '2025-01-07', '2025-01-08'];
-const yData = [75, 80, 85, 78, 43, 57, 98, 75];
-const qualityData = [82, 88, 90, 84, 67, 42, 83, 83]; 
-createOeeLineChart('oeeLineChart', xData, yData, qualityData);
+
+const xData = xAxisDate;
+const yDataOEE = yAxisOEE;
+const yQualityData = yAxisQuality; 
+createOeeLineChart('oeeLineChart', xData, yDataOEE, yQualityData);
 
 
-// Dane wejściowe
-const goodProducts = 120; // Liczba wyrobów dobrych
-const badProducts = 30;  // Liczba wyrobów niedobrych
-const canceledProducts = 20; // Liczba wyrobów anulowanych
 
-// Tworzenie wykresu donutowego
+const goodProducts = qualityValues[0]; 
+const badProducts = qualityValues[1];  
+const canceledProducts = qualityValues[2]; 
+
+
 createDonutChart('productStatusChart', goodProducts, badProducts, canceledProducts);
 

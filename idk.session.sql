@@ -60,7 +60,7 @@
 --     result.work_date, result.machineId
 -- ) AS result;
 
--- ? Czy współczynnik OEE jest obliczany poprawnie?
+-- ?Czy współczynnik OEE jest obliczany poprawnie?
 
 
 -- SELECT *
@@ -155,3 +155,13 @@ FROM (
 ) AS result
 ORDER BY 
     result.work_date, result.machineId
+
+-- SELECT
+--   SUM(OK), SUM(NOK), SUM(ANULOWANY)
+-- FROM(
+--   SELECT
+--     CASE WHEN status = 1 THEN 1 ELSE 0 END AS OK,
+--     CASE WHEN status = 2 THEN 1 ELSE 0 END AS NOK,
+--     CASE WHEN status = 3 THEN 1 ELSE 0 END AS ANULOWANY    
+--   FROM produkty
+-- ) a;

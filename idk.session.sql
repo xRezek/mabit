@@ -63,32 +63,32 @@
 -- ?Czy współczynnik OEE jest obliczany poprawnie?
 
 
--- SELECT *
--- FROM(
---   SELECT 
---     machineId,
---     (round(count(CASE WHEN status = 1 THEN 1 END)/COUNT(CASE WHEN status != 4 AND status != 0 THEN 1 END),2)) AS quality,
---     DATE(timestamp) AS work_date
---   FROM 
---     produkty
---   GROUP BY work_date, machineId
--- ) AS quality_indicator
--- WHERE quality IS NOT NULL AND quality != 0
+SELECT *
+FROM(
+  SELECT 
+    machineId,
+    (round(count(CASE WHEN status = 1 THEN 1 END)/COUNT(CASE WHEN status != 4 AND status != 0 THEN 1 END),2)) AS quality,
+    DATE(timestamp) AS work_date
+  FROM 
+    produkty
+  GROUP BY work_date, machineId
+) AS quality_indicator
+WHERE quality IS NOT NULL AND quality != 0
 
 
--- SELECT 
---     DATE(timestamp) AS work_date,
---     machineId,
---     COUNT(*) * 20 AS working_time_seconds,
---     SEC_TO_TIME(COUNT(*) * 20) AS working_time_hms
--- FROM 
---     machine_status
--- WHERE 
---     isOn = 1
--- GROUP BY 
---     work_date, machineId
--- ORDER BY 
---     work_date, machineId;
+SELECT 
+    DATE(timestamp) AS work_date,
+    machineId,
+    COUNT(*) * 20 AS working_time_seconds,
+    SEC_TO_TIME(COUNT(*) * 20) AS working_time_hms
+FROM 
+    machine_status
+WHERE 
+    isOn = 1
+GROUP BY 
+    work_date, machineId
+ORDER BY 
+    work_date, machineId;
 
 
 
@@ -117,9 +117,8 @@ FROM (
         ROUND(ms.working_time_seconds / 3600 / 7, 2) AS availability,
         ROUND(
                 (SELECT ROUND(AVG(cycleTime)/3600, 2) FROM produkty WHERE status = 1)
-                * (SELECT COUNT(*) FROM produkty WHERE status IN (1, 2, 3))
-            
-            / (ms.working_time_seconds / 60),
+                * (SELECT COUNT(*) FROM produkty WHERE status IN (1, 2, 3))           
+            / (ms.working_time_seconds / 3600),
             2
         ) AS effectiveness
     FROM (
@@ -156,12 +155,25 @@ FROM (
 ORDER BY 
     result.work_date, result.machineId
 
--- SELECT
---   SUM(OK), SUM(NOK), SUM(ANULOWANY)
--- FROM(
---   SELECT
---     CASE WHEN status = 1 THEN 1 ELSE 0 END AS OK,
---     CASE WHEN status = 2 THEN 1 ELSE 0 END AS NOK,
---     CASE WHEN status = 3 THEN 1 ELSE 0 END AS ANULOWANY    
---   FROM produkty
--- ) a;
+
+
+--* zapytanie zlicza produkty do wykresu kołowego 
+
+SELECT
+  SUM(OK), SUM(NOK), SUM(ANULOWANY)
+FROM(
+  SELECT
+    CASE WHEN status = 1 THEN 1 ELSE 0 END AS OK,
+    CASE WHEN status = 2 THEN 1 ELSE 0 END AS NOK,
+    CASE WHEN status = 3 THEN 1 ELSE 0 END AS ANULOWANY    
+  FROM produkty
+) a;
+
+
+
+
+
+
+
+
+

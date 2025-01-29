@@ -40,7 +40,7 @@ function createIndicator(id, value, title) {
     margin: { t: 40, r: 40, b: 10, l: 40 }
   };
 
-  const config = { responsive: true }; // Responsywność
+  const config = { responsive: true };
   Plotly.newPlot(id, data, layout, config);
 }
 
@@ -68,7 +68,7 @@ function createOeeLineChart(id, xData, oeeData, qualityData) {
   const layout = {
     title: 'Wskaźniki OEE i jakości w czasie',
     xaxis: {
-      title: 'Czas',
+      title: 'Data',
       showgrid: true,
       zeroline: false
     },
@@ -110,6 +110,33 @@ function createDonutChart(id, goodProducts, badProducts, canceledProducts) {
   Plotly.newPlot(id, data, layout, config);
 }
 
+function createHorizontalBarChart(id, labels, values, colors) {
+  const data = [{
+    type: 'bar',
+    x: values, 
+    y: labels,
+    orientation: 'h',
+    marker: { color: colors },
+    text: values.map(String),
+    textposition: 'auto'
+  }];
+
+  const layout = {
+    title: 'Horyzontalny Bar Chart',
+    xaxis: { title: 'Wartość' },
+    yaxis: { title: 'Kategorie' },
+    margin: { t: 40, r: 20, b: 40, l: 100 }, // Większy lewy margines dla długich etykiet
+    height: 400,
+    width: 600,
+    paper_bgcolor: 'lightgray', // Tło całego wykresu
+    plot_bgcolor: 'white' // Tło obszaru danych
+  };
+
+  const config = { responsive: true }; // Responsywność
+  Plotly.newPlot(id, data, layout, config);
+}
+
+
 
 
 createIndicator("oeeIndicator", parseInt(oeeValues[0] * oeeValues[1] * oeeValues[2] * 100), "OEE", "blue");
@@ -135,3 +162,10 @@ const canceledProducts = qualityValues[2];
 
 createDonutChart('productStatusChart', goodProducts, badProducts, canceledProducts);
 
+
+const labels = ['Produkt A', 'Produkt B', 'Produkt C', 'Produkt D']; // Kategorie (oś Y)
+const values = [120, 80, 150, 60]; // Wartości (oś X)
+const colors = ['blue', 'green', 'red', 'orange']; // Kolory słupków
+
+
+createHorizontalBarChart('productHorizontalBarChart', labels, values, colors);

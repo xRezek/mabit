@@ -26,8 +26,8 @@
 
 
     if($resultMachines){
-      while($row = $resultMachines->fetch_all()){
-          $columnMachine = $row["machineId"];
+      while($row = $resultMachines->fetch_assoc()){
+        $columnMachine[] = $row["machineId"];
       }
     }
     

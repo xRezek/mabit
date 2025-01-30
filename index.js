@@ -163,8 +163,8 @@ const canceledProducts = qualityValues[2];
 createDonutChart('productStatusChart', goodProducts, badProducts, canceledProducts);
 
 
-const labels = ['Produkt A', 'Produkt B', 'Produkt C', 'Produkt D']; // Kategorie (oś Y)
-const values = [120, 80, 150, 60]; // Wartości (oś X)
+const labels = ['Produkt A', 'Produkt B', 'Produkt C', 'Produkt D']; // Kategorie oś Y
+const values = [120, 80, 150, 60]; // Wartości oś X
 const colors = ['blue', 'green', 'red', 'orange']; // Kolory słupków
 
 

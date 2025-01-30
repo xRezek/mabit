@@ -1,7 +1,5 @@
 <?php
   include "controller.php";
-
-  dump($resultMachines);
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -13,7 +11,6 @@
   <title>Mabit</title>
 </head>
 <body>
-  <input type="datetime-local">
   <div id="columnData" data-json=<?= json_encode($columnData, JSON_HEX_APOS); ?> style="display:none"></div>
   <div id="columnOEE" data-json=<?= json_encode($columnOEE, JSON_HEX_APOS); ?> style="display:none"></div>
   <div id="columnQuality" data-json=<?= json_encode($columnQuality, JSON_HEX_APOS); ?> style="display:none"></div>
@@ -30,24 +27,20 @@
         <span class="navbar-toggler-icon"></span>
       </button>
       <div class="collapse navbar-collapse justify-content-center" id="navbarSupportedContent">
-        <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-          <li class="nav-item dropdown">
-            <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-              Maszyna
-            </a>
-            <ul class="dropdown-menu">
-              <li><a class="dropdown-item" href="#">Action</a></li>
-              <li><a class="dropdown-item" href="#">Another action</a></li>
-              <li><a class="dropdown-item" href="#">Something else here</a></li>
-            </ul>
-          </li>
-        </ul>
         <form class="d-flex">
-                <label for="dateFrom" class="me-2 align-self-center">Od:</label>
-                <input type="date" id="dateFrom" class="form-control me-2">
-                <label for="dateTo" class="me-2 align-self-center">Do:</label>
-                <input type="date" id="dateTo" class="form-control">
-            </form>
+          <select class="form-select me-3" name="machine">
+            <option value="---" selected>Wszystkie</option>
+            <?php
+              for($i = 0; $i<count($columnMachine); $i++)
+                echo "<option value=$columnMachine[$i]>$columnMachine[$i]</option>";
+            ?>
+          </select>
+          <label for="dateFrom" class="me-2 align-self-center">Od:</label>
+          <input type="datetime-local" id="dateFrom" class="form-control me-2" name="dateFrom">            
+          <label for="dateTo" class="me-2 align-self-center">Do:</label>
+          <input type="datetime-local" id="dateTo" class="form-control" name="dateTo">
+          <button class="btn btn-outline-dark ms-3" type="submit">Filtruj</button>
+        </form>
       </div>
     </div>
   </nav>

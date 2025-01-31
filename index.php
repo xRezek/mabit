@@ -1,5 +1,8 @@
 <?php
   include "controller.php";
+
+  dump(mktime(2));
+
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -29,7 +32,7 @@
       <div class="collapse navbar-collapse justify-content-center" id="navbarSupportedContent">
         <form class="d-flex">
           <select class="form-select me-3" name="machine">
-            <option value="---" selected>Wszystkie</option>
+            <option value="%%" selected>Wszystkie</option>
             <?php
               for($i = 0; $i<count($columnMachine); $i++)
                 echo "<option value=$columnMachine[$i]>$columnMachine[$i]</option>";

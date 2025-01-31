@@ -150,7 +150,9 @@ createIndicator("effectivenessIndicator", parseInt(oeeValues[2] * 100), "Wydajno
 
 const xData = xAxisDate;
 const yDataOEE = yAxisOEE;
-const yQualityData = yAxisQuality; 
+const yQualityData = yAxisQuality;
+
+
 createOeeLineChart('oeeLineChart', xData, yDataOEE, yQualityData);
 
 

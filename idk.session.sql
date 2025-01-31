@@ -103,57 +103,58 @@
 -- ) AS quality_indicator
 -- WHERE quality IS NOT NULL AND quality != 0)
 
-SELECT 
-    result.work_date,
-    result.machineId,
-    result.quality,
-    result.availability,
-    result.effectiveness
-FROM (
-    SELECT 
-        q.work_date,
-        q.machineId,
-        q.quality,
-        ROUND(ms.working_time_seconds / 3600 / 7, 2) AS availability,
-        ROUND(
-                (SELECT ROUND(AVG(cycleTime)/3600, 2) FROM produkty WHERE status = 1)
-                * (SELECT COUNT(*) FROM produkty WHERE status IN (1, 2, 3))           
-            / (ms.working_time_seconds / 3600),
-            2
-        ) AS effectiveness
-    FROM (
-        SELECT *
-        FROM (
-            SELECT 
-                machineId,
-                ROUND(COUNT(CASE WHEN status = 1 THEN 1 END) / 
-                      COUNT(CASE WHEN status != 4 AND status != 0 THEN 1 END), 2) AS quality,
-                DATE(timestamp) AS work_date
-            FROM 
-              produkty
-            GROUP BY 
-              work_date, machineId
-        ) AS quality_indicator
-        WHERE quality IS NOT NULL AND quality != 0
-    ) AS q
-    JOIN (
-        SELECT 
-            DATE(timestamp) AS work_date,
-            machineId,
-            COUNT(*) * 20 AS working_time_seconds
-        FROM 
-            machine_status
-        WHERE 
-            isOn = 1
-        GROUP BY 
-            work_date, machineId
-    ) AS ms
-    ON 
-        q.work_date = ms.work_date 
-        AND q.machineId = ms.machineId
-) AS result
-ORDER BY 
-    result.work_date, result.machineId
+-- * zapytanie oblicza parametry do obliczenia wskaźnika OEE
+-- SELECT 
+--     result.work_date,
+--     result.machineId,
+--     result.quality,
+--     result.availability,
+--     result.effectiveness
+-- FROM (
+--     SELECT 
+--         q.work_date,
+--         q.machineId,
+--         q.quality,
+--         ROUND(ms.working_time_seconds / 3600 / 7, 2) AS availability,
+--         ROUND(
+--                 (SELECT ROUND(AVG(cycleTime)/3600, 2) FROM produkty WHERE status = 1)
+--                 * (SELECT COUNT(*) FROM produkty WHERE status IN (1, 2, 3))           
+--             / (ms.working_time_seconds / 3600),
+--             2
+--         ) AS effectiveness
+--     FROM (
+--         SELECT *
+--         FROM (
+--             SELECT 
+--                 machineId,
+--                 ROUND(COUNT(CASE WHEN status = 1 THEN 1 END) / 
+--                       COUNT(CASE WHEN status != 4 AND status != 0 THEN 1 END), 2) AS quality,
+--                 DATE(timestamp) AS work_date
+--             FROM 
+--               produkty
+--             GROUP BY 
+--               work_date, machineId
+--         ) AS quality_indicator
+--         WHERE quality IS NOT NULL AND quality != 0
+--     ) AS q
+--     JOIN (
+--         SELECT 
+--             DATE(timestamp) AS work_date,
+--             machineId,
+--             COUNT(*) * 20 AS working_time_seconds
+--         FROM 
+--             machine_status
+--         WHERE 
+--             isOn = 1
+--         GROUP BY 
+--             work_date, machineId
+--     ) AS ms
+--     ON 
+--         q.work_date = ms.work_date 
+--         AND q.machineId = ms.machineId
+-- ) AS result
+-- ORDER BY 
+--     result.work_date, result.machineId
 
 
 
@@ -170,10 +171,14 @@ ORDER BY
 -- ) a;
 
 
+-- SELECT
+--   ROUND(COUNT(CASE WHEN status = 1 THEN 1 END)/COUNT(CASE WHEN status != 4 AND status != 0 THEN 1 END),2) AS quality
+-- FROM 
+--   produkty
+-- WHERE machineId LIKE "%%"
 
 
 
-
-
-
-
+SELECT
+	ROUND((SELECT COUNT(*) FROM `produkty` WHERE status = 1 AND machineId LIKE "%%")
+  /(SELECT COUNT(*) FROM produkty WHERE status NOT IN (0,4)),2) as quality

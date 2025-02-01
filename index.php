@@ -1,7 +1,7 @@
 <?php
   include "controller.php";
-
-  dump(mktime(2));
+  dump($get);
+  dump(date("Y-m-d\TH:i"));
 
 ?>
 <!DOCTYPE html>
@@ -35,7 +35,7 @@
             <option value="%%" selected>Wszystkie</option>
             <?php
               for($i = 0; $i<count($columnMachine); $i++)
-                echo "<option value=$columnMachine[$i]>$columnMachine[$i]</option>";
+                echo "<option value='" . htmlspecialchars($columnMachine[$i], ENT_QUOTES, 'UTF-8') . "'>" . htmlspecialchars($columnMachine[$i], ENT_QUOTES, 'UTF-8') . "</option>";
             ?>
           </select>
           <label for="dateFrom" class="me-2 align-self-center">Od:</label>
@@ -74,6 +74,6 @@
 
   <script src="https://cdn.plot.ly/plotly-2.35.2.min.js" charset="utf-8"></script>
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
-  <script src="index.js"></script>
+  <script src="index.js" defer></script>
 </body>
 </html>

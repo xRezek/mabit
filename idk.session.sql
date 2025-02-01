@@ -178,7 +178,12 @@
 -- WHERE machineId LIKE "%%"
 
 
+-- * zapytanie bez parametru
+-- SELECT
+-- 	ROUND((SELECT COUNT(*) FROM `produkty` WHERE status = 1 AND machineId LIKE "%%") 
+--   /(SELECT COUNT(*) FROM produkty WHERE status NOT IN (0,4)),2) as quality
 
-SELECT
-	ROUND((SELECT COUNT(*) FROM `produkty` WHERE status = 1 AND machineId LIKE "%%")
-  /(SELECT COUNT(*) FROM produkty WHERE status NOT IN (0,4)),2) as quality
+
+-- SELECT
+-- 	ROUND((SELECT COUNT(*) FROM `produkty` WHERE status = 1 AND machineId LIKE "%%" AND timestamp BETWEEN "2025-01-29T08:00" AND "2025-01-29 16:00")
+--   /(SELECT COUNT(*) FROM produkty WHERE status NOT IN (0,4) AND timestamp BETWEEN "2025-01-29T08:00" AND ''  ),2) as quality

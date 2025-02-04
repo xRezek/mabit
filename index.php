@@ -1,8 +1,5 @@
 <?php
-  include "controller.php";
-  dump($get);
-  dump(date("Y-m-d\TH:i"));
-
+  require_once __DIR__ . "/controller.php";
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -14,15 +11,15 @@
   <title>Mabit</title>
 </head>
 <body>
-  <div id="columnData" data-json=<?= json_encode($columnData, JSON_HEX_APOS); ?> style="display:none"></div>
-  <div id="columnOEE" data-json=<?= json_encode($columnOEE, JSON_HEX_APOS); ?> style="display:none"></div>
-  <div id="columnQuality" data-json=<?= json_encode($columnQuality, JSON_HEX_APOS); ?> style="display:none"></div>
-  <input type="hidden" class="oeeParams" value="<?= $resultArray[0][0]?>">
-  <input type="hidden" class="oeeParams" value="<?= $resultArray[0][1]?>">
-  <input type="hidden" class="oeeParams" value="<?= $resultArray[0][2]?>">
-  <input type="hidden" class="qualityParams" value="<?= $resultQuality[0][0]?>">
-  <input type="hidden" class="qualityParams" value="<?= $resultQuality[0][1]?>">
-  <input type="hidden" class="qualityParams" value="<?= $resultQuality[0][2]?>">
+  <div id="columnData" data-json="<?= htmlspecialchars(json_encode($columnDate, JSON_HEX_APOS), ENT_QUOTES, 'UTF-8'); ?>" style="display:none"></div>
+  <div id="columnOEE" data-json="<?= htmlspecialchars(json_encode($columnOEE, JSON_HEX_APOS), ENT_QUOTES, 'UTF-8'); ?>" style="display:none"></div>
+  <div id="columnQuality" data-json="<?= htmlspecialchars(json_encode($columnQuality, JSON_HEX_APOS), ENT_QUOTES, 'UTF-8'); ?>" style="display:none"></div>
+  <input type="hidden" class="oeeParams" value="<?= htmlspecialchars($resultGetQuality[0], ENT_QUOTES, 'UTF-8')?>">
+  <input type="hidden" class="oeeParams" value="<?= htmlspecialchars($resultGetAvailability[0], ENT_QUOTES, 'UTF-8')?>">
+  <input type="hidden" class="oeeParams" value="<?= htmlspecialchars($resultGetEffectiveness[0], ENT_QUOTES, 'UTF-8')?>">
+  <input type="hidden" class="qualityParams" value="<?= htmlspecialchars($resultGetProductStatus[0], ENT_QUOTES, 'UTF-8')?>">
+  <input type="hidden" class="qualityParams" value="<?= htmlspecialchars($resultGetProductStatus[1], ENT_QUOTES, 'UTF-8')?>">
+  <input type="hidden" class="qualityParams" value="<?= htmlspecialchars($resultGetProductStatus[2], ENT_QUOTES, 'UTF-8')?>">
   <nav class="navbar navbar-expand-lg nav-bg-color">
     <div class="container-fluid justify-content-center">
       <a class="navbar-brand" href="#">Mabit</a>
@@ -34,15 +31,28 @@
           <select class="form-select me-3" name="machine">
             <option value="%%" selected>Wszystkie</option>
             <?php
-              for($i = 0; $i<count($columnMachine); $i++)
-                echo "<option value='" . htmlspecialchars($columnMachine[$i], ENT_QUOTES, 'UTF-8') . "'>" . htmlspecialchars($columnMachine[$i], ENT_QUOTES, 'UTF-8') . "</option>";
+              $columnMachineCount = count($columnMachine);
+              foreach ($columnMachine as $machine) {
+                $machine = htmlspecialchars($machine, ENT_QUOTES, 'UTF-8');
+                $selected = isset($get['machine']) && $get['machine'] === $machine ? 'selected' : '';
+                echo "<option value='$machine' $selected>$machine</option>";
+              }
             ?>
           </select>
           <label for="dateFrom" class="me-2 align-self-center">Od:</label>
-          <input type="datetime-local" id="dateFrom" class="form-control me-2" name="dateFrom">            
+          <input type="datetime-local" id="dateFrom" class="form-control me-2" name="dateFrom" value="<?php if(isset($get['dateFrom'])){
+            echo  htmlspecialchars($get['dateFrom'],ENT_QUOTES,'UTF-8');
+          }else{
+            echo  htmlspecialchars(date("Y-m-d\TH:i", strtotime('-24 hours')),ENT_QUOTES,'UTF-8');
+          }?>">            
           <label for="dateTo" class="me-2 align-self-center">Do:</label>
-          <input type="datetime-local" id="dateTo" class="form-control" name="dateTo">
+          <input type="datetime-local" id="dateTo" class="form-control" name="dateTo" value="<?php if(isset($get['dateTo'])){
+            echo  htmlspecialchars($get['dateTo'],ENT_QUOTES,'UTF-8');
+          }else{
+            echo  htmlspecialchars(date("Y-m-d\TH:i"),ENT_QUOTES,'UTF-8');
+          }?>">
           <button class="btn btn-outline-dark ms-3" type="submit">Filtruj</button>
+          <input class="btn btn-outline-dark ms-3" type="reset" value="Wyczyść flitry">
         </form>
       </div>
     </div>
@@ -72,7 +82,7 @@
     </div>
   </div>
 
-  <script src="https://cdn.plot.ly/plotly-2.35.2.min.js" charset="utf-8"></script>
+  <script src="https://cdn.plot.ly/plotly-2.35.2.min.js" charset="utf-8" defer></script>
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
   <script src="index.js" defer></script>
 </body>

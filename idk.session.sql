@@ -19,10 +19,10 @@
 --         q.quality,
 --         ROUND(ms.working_time_seconds / 3600 / 7, 2) AS availability,
 --         ROUND(
---                 (SELECT ROUND(AVG(cycleTime)/3600, 2) FROM produkty WHERE status = 1)
---                 * (SELECT COUNT(*) FROM produkty WHERE status IN (1, 2, 3))
+--                 ((SELECT ROUND(AVG(cycleTime)/3600, 2) FROM produkty WHERE status = 1))
+--                 * ((SELECT COUNT(*) FROM produkty WHERE status IN (1, 2, 3)))
             
---             / (ms.working_time_seconds / 60),
+--             / (ms.working_time_seconds / 60)),
 --             2
 --         ) AS effectiveness
 --     FROM (
@@ -92,7 +92,7 @@
 
 
 
--- SELECT machineId (SELECT AVG(cycleTime) FROM produkty WHERE status = 1 AS avg_cycle_time) * (SELECT *
+-- SELECT machineId, (SELECT AVG(cycleTime) FROM produkty WHERE status = 1) AS avg_cycle_time * (SELECT *
 -- FROM(
 --   SELECT 
 --     (round(COUNT(CASE WHEN status != 4 AND status != 0 THEN 1 END),2)) AS quality,
@@ -160,16 +160,27 @@
 
 -- * zapytanie zlicza produkty do wykresu kołowego 
 
--- SELECT
---   SUM(OK), SUM(NOK), SUM(ANULOWANY)
--- FROM(
---   SELECT
---     CASE WHEN status = 1 THEN 1 ELSE 0 END AS OK,
---     CASE WHEN status = 2 THEN 1 ELSE 0 END AS NOK,
---     CASE WHEN status = 3 THEN 1 ELSE 0 END AS ANULOWANY    
---   FROM produkty
--- ) a;
+SELECT
+  SUM(OK), SUM(NOK), SUM(ANULOWANY)
+FROM(
+  SELECT
+    CASE WHEN status = 1 THEN 1 ELSE 0 END AS OK,
+    CASE WHEN status = 2 THEN 1 ELSE 0 END AS NOK,
+    CASE WHEN status = 3 THEN 1 ELSE 0 END AS ANULOWANY    
+  FROM produkty
+  WHERE
+    machineId LIKE "1103_05_UA"
+    AND timestamp BETWEEN '2025-02-04T08:00' AND '2025-02-04T19:00'
+) a;
 
+  -- SELECT
+  --   CASE WHEN status = 1 THEN 1 ELSE 0 END AS OK,
+  --   CASE WHEN status = 2 THEN 1 ELSE 0 END AS NOK,
+  --   CASE WHEN status = 3 THEN 1 ELSE 0 END AS ANULOWANY    
+  -- FROM produkty
+  -- WHERE
+  --   machineId LIKE "1103_05_UA"
+  --   AND timestamp BETWEEN '2025-02-04T08:00' AND '2025-02-04T19:00'
 
 -- SELECT
 --   ROUND(COUNT(CASE WHEN status = 1 THEN 1 END)/COUNT(CASE WHEN status != 4 AND status != 0 THEN 1 END),2) AS quality
@@ -186,4 +197,34 @@
 
 -- SELECT
 -- 	ROUND((SELECT COUNT(*) FROM `produkty` WHERE status = 1 AND machineId LIKE "%%" AND timestamp BETWEEN "2025-01-29T08:00" AND "2025-01-29 16:00")
---   /(SELECT COUNT(*) FROM produkty WHERE status NOT IN (0,4) AND timestamp BETWEEN "2025-01-29T08:00" AND ''  ),2) as quality
+--   /(SELECT COUNT(*) FROM produkty WHERE status NOT IN (0,4) AND timestamp BETWEEN "2025-01-29T08:00" AND '2025-01-29T16:00'  ),2) as quality
+
+-- SELECT
+--   ROUND((SELECT (COUNT(*) * 20) / 3600 FROM machine_status
+--    WHERE isOn = 1 
+--      AND machineId LIKE "1103_05_UA"
+--      AND timestamp BETWEEN '2025-02-04T08:00' AND '2025-02-04T19:00') 
+--    /
+--   (SELECT (COUNT(*) * 20) / 3600 FROM machine_status
+--    WHERE machineId LIKE "1103_05_UA"
+--      AND timestamp BETWEEN '2025-02-04T08:00' AND '2025-02-04T19:00'),2) AS availability;
+
+-- 
+
+-- SELECT
+--   ROUND(
+--       (
+--       SELECT
+--         COUNT(*)
+--       FROM
+--         `produkty`
+--       WHERE
+--         status = 1 AND machineId LIKE "%%" AND TIMESTAMP BETWEEN ? AND ?
+--       ) /(
+--       SELECT
+--         COUNT(*)
+--       FROM
+--         produkty
+--       WHERE
+--         status NOT IN (0, 4) AND TIMESTAMP BETWEEN ? AND ?
+--       ),2) AS quality;

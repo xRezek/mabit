@@ -20,11 +20,29 @@
     echo "Błąd połączenia z bazą.";
   }else{
     
+    $stmtGetQuality = $conn->prepare($sqlGetQuality);
+    $stmtGetQuality->bind_param("ssssss", $machine, $dateFrom, $dateTo, $machine, $dateFrom, $dateTo);
+    $stmtGetQuality->execute();
+    $resultGetQuality = $stmtGetQuality->get_result()->fetch_row();
 
-    $resultArray = $conn->query($sqlQueryGetOEEparams)->fetch_all();
+    $stmtGetAvailability = $conn->prepare($sqlGetAvailability);
+    $stmtGetAvailability->bind_param("ssssss", $machine, $dateFrom, $dateTo, $machine, $dateFrom, $dateTo);
+    $stmtGetAvailability->execute();
+    $resultGetAvailability = $stmtGetAvailability->get_result()->fetch_row(); 
+
+    $stmtGetEffectiveness = $conn->prepare($sqlGetEffectiveness);
+    $stmtGetEffectiveness->bind_param("sss", $machine, $dateFrom, $dateTo);
+    $stmtGetEffectiveness->execute();
+    $resultGetEffectiveness = $stmtGetEffectiveness->get_result()->fetch_row();
+
+
+    $stmtGetProductStatus = $conn->prepare($sqlGetProductStatus);
+    $stmtGetProductStatus->bind_param("sss", $machine, $dateFrom, $dateTo);
+    $stmtGetProductStatus->execute();
+    $resultGetProductStatus = $stmtGetProductStatus->get_result()->fetch_row();
+
 
     
-    $resultQuality = $conn->query($sqlGetQuality)->fetch_all();
 
     $resultMachines = $conn->query($sqlGetMachines);
 
@@ -39,7 +57,7 @@
     
     if ($result) {
         while ($row = $result->fetch_assoc()) {
-            $columnData[] = $row['date'];
+            $columnDate[] = $row['date'];
             $columnOEE[] = $row['OEE'];
             $columnQuality[] = $row['quality'];
         }
@@ -49,3 +67,5 @@
 
     $conn->close();
   }
+
+  //todo zebrać dane i przetestować działanie wskaźników

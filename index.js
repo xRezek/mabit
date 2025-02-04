@@ -44,7 +44,6 @@ function createIndicator(id, value, title) {
   Plotly.newPlot(id, data, layout, config);
 }
 
-
 function createOeeLineChart(id, xData, oeeData, qualityData) {
   const oeeTrace = {
     x: xData,
@@ -92,7 +91,7 @@ function createDonutChart(id, goodProducts, badProducts, canceledProducts) {
     type: 'pie',
     values: [goodProducts, badProducts, canceledProducts],
     labels: ['Dobre', 'Niedobre', 'Anulowane'],
-    textinfo: 'label+percent', 
+    textinfo: 'label+percent',
     marker: {
       colors: ['#28a745', '#dc3545', '#ffc107']
     }
@@ -137,14 +136,10 @@ function createHorizontalBarChart(id, labels, values, colors) {
 }
 
 
-
-
-createIndicator("oeeIndicator", parseInt(oeeValues[0] * oeeValues[1] * oeeValues[2] * 100), "OEE", "blue");
-createIndicator("qualityIndicator", parseInt(oeeValues[0] * 100), "Jakość", "green");
-createIndicator("availabilityIndicator", parseInt(oeeValues[1] * 100), "Dostępność", "orange");
-createIndicator("effectivenessIndicator", parseInt(oeeValues[2] * 100), "Wydajność", "red");
-
-
+createIndicator("oeeIndicator", parseInt(oeeValues[0] * oeeValues[1] * 1 * 100), "OEE");
+createIndicator("qualityIndicator", parseInt(oeeValues[0] * 100), "Jakość");
+createIndicator("availabilityIndicator", parseInt(oeeValues[1] * 100), "Dostępność");
+createIndicator("effectivenessIndicator", parseInt(oeeValues[2] * 100), "Wydajność");
 
 
 
@@ -156,18 +151,14 @@ const yQualityData = yAxisQuality;
 createOeeLineChart('oeeLineChart', xData, yDataOEE, yQualityData);
 
 
-
 const goodProducts = qualityValues[0]; 
 const badProducts = qualityValues[1];  
 const canceledProducts = qualityValues[2]; 
 
-
 createDonutChart('productStatusChart', goodProducts, badProducts, canceledProducts);
-
 
 const labels = ['Produkt A', 'Produkt B', 'Produkt C', 'Produkt D']; // Kategorie oś Y
 const values = [120, 80, 150, 60]; // Wartości oś X
 const colors = ['blue', 'green', 'red', 'orange']; // Kolory słupków
-
 
 createHorizontalBarChart('productHorizontalBarChart', labels, values, colors);

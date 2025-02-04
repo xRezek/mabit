@@ -5,8 +5,6 @@ import schedule
 import time
 
 
-def completedata():
-  print("test")
 # The callback for when the client receives a CONNACK response from the server.
 def on_connect(client, userdata, flags, reason_code, properties):
     print(f"Connected with result code {reason_code}")
@@ -57,15 +55,15 @@ def on_message(client, userdata, msg):
         print("Event not inserted")
       
       if DATA["product"]["Comment"] != "":
-        sql_insert_query_product = "INSERT INTO produkty (id, machineId, status, program, cycletime, progress, timestamp) VALUES (%s, %s, %s, %s, %s, %s, CURRENT_TIMESTAMP)"
-        product_values = (DATA["product"]["ID"], DATA["MachineID"], DATA["product"]["Status"], DATA["product"]["Serial"], DATA["product"]["CycleTime"], DATA["product"]["Comment"]["PROGRESS"])
+        sql_insert_query_product = "INSERT INTO produkty (id, machineId, status, program, cycletime, progress, scale, timestamp) VALUES (%s, %s, %s, %s, %s, %s, %s, CURRENT_TIMESTAMP)"
+        product_values = (DATA["product"]["ID"], DATA["MachineID"], DATA["product"]["Status"], DATA["product"]["Serial"], DATA["product"]["CycleTime"], DATA["product"]["Comment"]["PROGRESS"], DATA["product"]["Comment"]["SCALE"])
         mysql_cursor.execute(sql_insert_query_product, product_values)
         connection.commit()
         print("Product inserted successfully")
       else:
         print("Product not inserted")
 
-      if DATA["MachineStatus"][0]:
+      if DATA["MachineStatus"] is not None:
         sql_insert_query_machine_status = "INSERT INTO machine_status (machineId, isOn, timestamp) VALUES (%s, %s, CURRENT_TIMESTAMP)"
         machine_status_values = (DATA["MachineID"], DATA["MachineStatus"][0])
         mysql_cursor.execute(sql_insert_query_machine_status, machine_status_values)

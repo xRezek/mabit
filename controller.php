@@ -1,7 +1,7 @@
 <?php
 
-  require 'dbconfig.php'; //* dane do połączenia z bazą
-  require 'sqlQueries.php'; //* plik z zapytaniami sql
+  require_once 'dbconfig.php'; //* dane do połączenia z bazą
+  require_once 'sqlQueries.php'; //* plik z zapytaniami sql
   
   include "debug.php";
 
@@ -9,8 +9,8 @@
   $get = $_GET;
 
   $machine = $get['machine'] ?? "%%";
-  $dateFrom = $get['dateFrom'] ?? NULL;
-  $dateTo = $get['dateTo'] ?? NULL;
+  $dateFrom = $get['dateFrom'] ?? date("Y-m-d\TH:i", strtotime('-24 hours'));
+  $dateTo = $get['dateTo'] ?? date("Y-m-d\TH:i");
 
 
 

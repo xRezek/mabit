@@ -52,7 +52,6 @@
             echo  htmlspecialchars(date("Y-m-d\TH:i"),ENT_QUOTES,'UTF-8');
           }?>">
           <button class="btn btn-outline-dark ms-3" type="submit">Filtruj</button>
-          <input class="btn btn-outline-dark ms-3" type="reset" value="Wyczyść flitry">
         </form>
       </div>
     </div>

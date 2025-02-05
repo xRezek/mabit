@@ -53,6 +53,9 @@
           }?>">
           <button class="btn btn-outline-dark ms-3" type="submit">Filtruj</button>
         </form>
+        <button class="btn btn-outline-dark ms-3" type="button" data-bs-toggle="offcanvas" data-bs-target="#staticBackdrop">
+          Alerty i eventy
+        </button>
       </div>
     </div>
   </nav>
@@ -80,6 +83,8 @@
       </div>
     </div>
   </div>
+
+  <?php include_once "offcanvas.php" ?>
 
   <script src="https://cdn.plot.ly/plotly-2.35.2.min.js" charset="utf-8" defer></script>
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>

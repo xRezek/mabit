@@ -21,3 +21,20 @@
 .nav-bg-color{
   background-color: #ff4d06;
 }
+
+.offcanvas-custom-width {
+  width: 60% !important;
+}
+.table-border{
+  border: 1px solid black;
+  border-radius: 16px;
+  overflow: hidden; /* Ukrywa ostre rogi wewnętrznych elementów */
+  border-collapse:separate;
+  border-spacing: 0;
+}
+.table-border td, .table-border th{
+  border-right: 1px solid black;
+  overflow: hidden;
+  border-collapse:separate;
+  border-spacing: 0;
+}

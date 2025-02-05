@@ -41,6 +41,15 @@
     $stmtGetProductStatus->execute();
     $resultGetProductStatus = $stmtGetProductStatus->get_result()->fetch_row();
 
+    $stmtGetAlerts = $conn->prepare($sqlGetAlerts);
+    $stmtGetAlerts->bind_param("sss", $machine, $dateFrom, $dateTo);
+    $stmtGetAlerts->execute();
+    $resultGetAlerts = $stmtGetAlerts->get_result();
+
+    $stmtGetEvents = $conn->prepare($sqlGetEvents);
+    $stmtGetEvents->bind_param("sss", $machine, $dateFrom, $dateTo);
+    $stmtGetEvents->execute();
+    $resultGetEvents = $stmtGetEvents->get_result();
 
     
 
@@ -67,5 +76,3 @@
 
     $conn->close();
   }
-
-  //todo zebrać dane i przetestować działanie wskaźników

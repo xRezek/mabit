@@ -74,3 +74,23 @@
                       machineId
                      FROM 
                       maszyny";
+  
+  $sqlGetAlerts = "SELECT
+                    machineId,
+                    message,
+                    code,
+                    timestamp
+                   FROM
+                    `alarmy`
+                   WHERE
+                    machineId LIKE ? AND timestamp BETWEEN ? AND ?";
+
+$sqlGetEvents = "SELECT
+                    machineId,
+                    message,
+                    code,
+                    timestamp
+                   FROM
+                    `events`
+                   WHERE
+                    machineId LIKE ? AND timestamp BETWEEN ? AND ?";

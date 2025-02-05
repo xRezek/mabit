@@ -9,7 +9,7 @@
       <div class="row">
         <div class="col">
           <p class="h6">Alerty</p>
-          <table class="table table-border table-striped">
+          <table class="table table-border table-striped text-center">
             <thead class="table-info">
               <tr>
                 <th scope="col">Maszyna</th>
@@ -36,7 +36,7 @@
         </div>
         <div class="col">
         <p class="h6">Eventy</p>
-          <table class="table table-border table-striped">
+          <table class="table table-border table-striped text-center">
             <thead class="table-info">
               <tr>
                 <th scope="col">Maszyna</th>

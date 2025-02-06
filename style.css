@@ -22,6 +22,10 @@
   background-color: #ff4d06;
 }
 
+thead.custom-header {
+  background-color: #ff4d06;
+}
+
 .offcanvas-custom-width {
   width: 60% !important;
 }
@@ -39,4 +43,13 @@
   overflow: hidden;
   border-collapse:separate;
   border-spacing: 0;
+}
+
+.custom-checkbox input[type="checkbox"] {
+  width: 20px;  /* Zwiększona szerokość */
+  height: 20px; /* Zwiększona wysokość */
+}
+
+.custom-checkbox input[type="checkbox"]:checked {
+  accent-color: black; /* Współczesne przeglądarki */
 }

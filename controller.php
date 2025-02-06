@@ -3,7 +3,7 @@
   require_once 'dbconfig.php'; //* dane do połączenia z bazą
   require_once 'sqlQueries.php'; //* plik z zapytaniami sql
   
-  include "debug.php";
+  include 'debug.php';
 
 
   $get = $_GET;
@@ -11,6 +11,7 @@
   $machine = $get['machine'] ?? "%%";
   $dateFrom = $get['dateFrom'] ?? date("Y-m-d\TH:i", strtotime('-24 hours'));
   $dateTo = $get['dateTo'] ?? date("Y-m-d\TH:i");
+  $skipEffectiveness = $get['skipEffectiveness'] ?? null;
 
 
 
@@ -29,11 +30,16 @@
     $stmtGetAvailability->bind_param("ssssss", $machine, $dateFrom, $dateTo, $machine, $dateFrom, $dateTo);
     $stmtGetAvailability->execute();
     $resultGetAvailability = $stmtGetAvailability->get_result()->fetch_row(); 
+    
 
-    $stmtGetEffectiveness = $conn->prepare($sqlGetEffectiveness);
-    $stmtGetEffectiveness->bind_param("sss", $machine, $dateFrom, $dateTo);
-    $stmtGetEffectiveness->execute();
-    $resultGetEffectiveness = $stmtGetEffectiveness->get_result()->fetch_row();
+    if($skipEffectiveness === "on"){
+      $resultGetEffectiveness[0] = 1;
+    }else{
+      $stmtGetEffectiveness = $conn->prepare($sqlGetEffectiveness);
+      $stmtGetEffectiveness->bind_param("sss", $machine, $dateFrom, $dateTo);
+      $stmtGetEffectiveness->execute();
+      $resultGetEffectiveness = $stmtGetEffectiveness->get_result()->fetch_row();
+    }
 
 
     $stmtGetProductStatus = $conn->prepare($sqlGetProductStatus);

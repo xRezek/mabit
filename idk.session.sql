@@ -160,18 +160,18 @@
 
 -- * zapytanie zlicza produkty do wykresu kołowego 
 
-SELECT
-  SUM(OK), SUM(NOK), SUM(ANULOWANY)
-FROM(
-  SELECT
-    CASE WHEN status = 1 THEN 1 ELSE 0 END AS OK,
-    CASE WHEN status = 2 THEN 1 ELSE 0 END AS NOK,
-    CASE WHEN status = 3 THEN 1 ELSE 0 END AS ANULOWANY    
-  FROM produkty
-  WHERE
-    machineId LIKE "1103_05_UA"
-    AND timestamp BETWEEN '2025-02-04T08:00' AND '2025-02-04T19:00'
-) a;
+-- SELECT
+--   SUM(OK), SUM(NOK), SUM(ANULOWANY)
+-- FROM(
+--   SELECT
+--     CASE WHEN status = 1 THEN 1 ELSE 0 END AS OK,
+--     CASE WHEN status = 2 THEN 1 ELSE 0 END AS NOK,
+--     CASE WHEN status = 3 THEN 1 ELSE 0 END AS ANULOWANY    
+--   FROM produkty
+--   WHERE
+--     machineId LIKE "1103_05_UA"
+--     AND timestamp BETWEEN '2025-02-04T08:00' AND '2025-02-04T19:00'
+-- ) a;
 
   -- SELECT
   --   CASE WHEN status = 1 THEN 1 ELSE 0 END AS OK,
@@ -228,3 +228,5 @@ FROM(
 --       WHERE
 --         status NOT IN (0, 4) AND TIMESTAMP BETWEEN ? AND ?
 --       ),2) AS quality;
+
+-- todo napisać zapytanie wkładające dane ze wszystkich maszyn i konkretnego dnia

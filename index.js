@@ -1,8 +1,8 @@
 const oeeParams = document.querySelectorAll(".oeeParams");
-const oeeValues = Array.from(oeeParams).map(element => element.value);
+const oeeValues = Array.from(oeeParams).map(element => parseFloat(element.value));
 
 const qualityParams = document.querySelectorAll(".qualityParams");
-const qualityValues = Array.from(qualityParams).map(element => parseInt(element.value));
+const qualityValues = Array.from(qualityParams).map(element => parseFloat(element.value));
 
 const xAxisDate = JSON.parse(document.getElementById('columnData').dataset.json);
 const yAxisOEE = JSON.parse(document.getElementById('columnOEE').dataset.json);
@@ -65,7 +65,7 @@ function createOeeLineChart(id, xData, oeeData, qualityData) {
   };
 
   const layout = {
-    title: 'Wskaźniki OEE i jakości w czasie',
+    title: 'Wskaźniki OEE i jakości z wszystkich maszyn w czasie',
     xaxis: {
       title: 'Data',
       showgrid: true,
@@ -85,7 +85,7 @@ function createOeeLineChart(id, xData, oeeData, qualityData) {
   Plotly.newPlot(id, [oeeTrace, qualityTrace], layout, config); 
 }
 
-function createDonutChart(id, goodProducts, badProducts, canceledProducts) {
+function createPieChart(id, goodProducts, badProducts, canceledProducts) {
   // Dane do wykresu
   const data = [{
     type: 'pie',
@@ -100,9 +100,9 @@ function createDonutChart(id, goodProducts, badProducts, canceledProducts) {
   // Układ wykresu
   const layout = {
     title: 'Status wyrobów',
-    height: 600,
-    width: 600,
-    margin: { t: 40, r: 70, b: 40, l: 70 }
+    height: 700,
+    width: 700,
+    margin: { t: 160, r: 70, b: 40, l: 70 }
   };
 
   const config = { responsive: true }; 
@@ -136,10 +136,17 @@ function createHorizontalBarChart(id, labels, values, colors) {
 }
 
 
-createIndicator("oeeIndicator", parseInt(oeeValues[0] * oeeValues[1] * 1 * 100), "OEE");
+createIndicator("oeeIndicator", Math.round(oeeValues[0] * oeeValues[1] * oeeValues[2] * 100), "OEE");
 createIndicator("qualityIndicator", parseInt(oeeValues[0] * 100), "Jakość");
 createIndicator("availabilityIndicator", parseInt(oeeValues[1] * 100), "Dostępność");
-createIndicator("effectivenessIndicator", parseInt(oeeValues[2] * 100), "Wydajność");
+
+if(oeeValues[2] === 1){
+  createIndicator("effectivenessIndicator", null ,"Wydajność");
+}else{
+  createIndicator("effectivenessIndicator", parseInt(oeeValues[2] * 100), "Wydajność");
+}
+
+
 
 
 
@@ -155,10 +162,4 @@ const goodProducts = qualityValues[0];
 const badProducts = qualityValues[1];  
 const canceledProducts = qualityValues[2]; 
 
-createDonutChart('productStatusChart', goodProducts, badProducts, canceledProducts);
-
-const labels = ['Produkt A', 'Produkt B', 'Produkt C', 'Produkt D']; // Kategorie oś Y
-const values = [120, 80, 150, 60]; // Wartości oś X
-const colors = ['blue', 'green', 'red', 'orange']; // Kolory słupków
-
-createHorizontalBarChart('productHorizontalBarChart', labels, values, colors);
+createPieChart('productStatusChart', goodProducts, badProducts, canceledProducts);

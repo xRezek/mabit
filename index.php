@@ -1,5 +1,6 @@
 <?php
-  require_once __DIR__ . "/controller.php";
+require_once __DIR__ . "/controller.php";
+include_once "offcanvas.php";
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -11,15 +12,15 @@
   <title>Mabit</title>
 </head>
 <body>
-  <div id="columnData" data-json="<?= htmlspecialchars(json_encode($columnDate, JSON_HEX_APOS), ENT_QUOTES, 'UTF-8'); ?>" style="display:none"></div>
-  <div id="columnOEE" data-json="<?= htmlspecialchars(json_encode($columnOEE, JSON_HEX_APOS), ENT_QUOTES, 'UTF-8'); ?>" style="display:none"></div>
-  <div id="columnQuality" data-json="<?= htmlspecialchars(json_encode($columnQuality, JSON_HEX_APOS), ENT_QUOTES, 'UTF-8'); ?>" style="display:none"></div>
-  <input type="hidden" class="oeeParams" value="<?= htmlspecialchars($resultGetQuality[0], ENT_QUOTES, 'UTF-8')?>">
-  <input type="hidden" class="oeeParams" value="<?= htmlspecialchars($resultGetAvailability[0], ENT_QUOTES, 'UTF-8')?>">
-  <input type="hidden" class="oeeParams" value="<?= htmlspecialchars($resultGetEffectiveness[0], ENT_QUOTES, 'UTF-8')?>">
-  <input type="hidden" class="qualityParams" value="<?= htmlspecialchars($resultGetProductStatus[0], ENT_QUOTES, 'UTF-8')?>">
-  <input type="hidden" class="qualityParams" value="<?= htmlspecialchars($resultGetProductStatus[1], ENT_QUOTES, 'UTF-8')?>">
-  <input type="hidden" class="qualityParams" value="<?= htmlspecialchars($resultGetProductStatus[2], ENT_QUOTES, 'UTF-8')?>">
+  <div id="columnData" data-json="<?= isset($columnDate) ? htmlspecialchars(json_encode($columnDate, JSON_HEX_APOS), ENT_QUOTES, 'UTF-8') : ''; ?>" style="display:none"></div>
+  <div id="columnOEE" data-json="<?= isset($columnOEE) ? htmlspecialchars(json_encode($columnOEE, JSON_HEX_APOS), ENT_QUOTES, 'UTF-8') : ''; ?>" style="display:none"></div>
+  <div id="columnQuality" data-json="<?= isset($columnQuality) ? htmlspecialchars(json_encode($columnQuality, JSON_HEX_APOS), ENT_QUOTES, 'UTF-8') : ''; ?>" style="display:none"></div>
+  <input type="hidden" class="oeeParams" value="<?= isset($resultGetQuality[0]) ? htmlspecialchars($resultGetQuality[0], ENT_QUOTES, 'UTF-8') : '' ?>">
+  <input type="hidden" class="oeeParams" value="<?= isset($resultGetAvailability[0]) ? htmlspecialchars($resultGetAvailability[0], ENT_QUOTES, 'UTF-8') : '' ?>">
+  <input type="hidden" class="oeeParams" value="<?= isset($resultGetEffectiveness[0]) ? htmlspecialchars($resultGetEffectiveness[0], ENT_QUOTES, 'UTF-8') : '' ?>">
+  <input type="hidden" class="qualityParams" value="<?= isset($resultGetProductStatus[0]) ? htmlspecialchars($resultGetProductStatus[0], ENT_QUOTES, 'UTF-8') : '' ?>">
+  <input type="hidden" class="qualityParams" value="<?= isset($resultGetProductStatus[1]) ? htmlspecialchars($resultGetProductStatus[1], ENT_QUOTES, 'UTF-8') : '' ?>">
+  <input type="hidden" class="qualityParams" value="<?= isset($resultGetProductStatus[2]) ? htmlspecialchars($resultGetProductStatus[2], ENT_QUOTES, 'UTF-8') : '' ?>">
   <nav class="navbar navbar-expand-lg nav-bg-color">
     <div class="container-fluid justify-content-center">
       <a class="navbar-brand" href="#">Mabit</a>
@@ -34,7 +35,7 @@
               $columnMachineCount = count($columnMachine);
               foreach ($columnMachine as $machine) {
                 $machine = htmlspecialchars($machine, ENT_QUOTES, 'UTF-8');
-                $selected = isset($get['machine']) && $get['machine'] === $machine ? 'selected' : '';
+                $selected = isset($get) && isset($get['machine']) && $get['machine'] === $machine ? 'selected' : '';
                 echo "<option value='$machine' $selected>$machine</option>";
               }
             ?>
@@ -51,6 +52,12 @@
           }else{
             echo  htmlspecialchars(date("Y-m-d\TH:i"),ENT_QUOTES,'UTF-8');
           }?>">
+          <label class="text-nowrap mx-2 align-self-center custom-checkbox" for="skipEffectiveness">Pomiń efektywność</label>
+            <input class="custom-checkbox" type="checkbox" name="skipEffectiveness" id="skipEffectiveness" <?php
+             if(isset($skipEffectiveness) && $skipEffectiveness === "on")
+              echo "checked";            
+            ?>>
+          
           <button class="btn btn-outline-dark ms-3" type="submit">Filtruj</button>
         </form>
         <button class="btn btn-outline-dark ms-3" type="button" data-bs-toggle="offcanvas" data-bs-target="#staticBackdrop">
@@ -77,14 +84,10 @@
         <div class="row">
           <div id="productStatusChart" class="col"></div>
         </div>
-        <div class="row">
-          <!-- <div id="productHorizontalBarChart"></div> -->
-        </div>
       </div>
     </div>
   </div>
 
-  <?php include_once "offcanvas.php" ?>
 
   <script src="https://cdn.plot.ly/plotly-2.35.2.min.js" charset="utf-8" defer></script>
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>

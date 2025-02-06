@@ -52,7 +52,7 @@ include_once "offcanvas.php";
           }else{
             echo  htmlspecialchars(date("Y-m-d\TH:i"),ENT_QUOTES,'UTF-8');
           }?>">
-          <label class="text-nowrap mx-2 align-self-center custom-checkbox" for="skipEffectiveness">Pomiń efektywność</label>
+          <label class="text-nowrap mx-2 align-self-center custom-checkbox" for="skipEffectiveness">Pomiń wydajność</label>
             <input class="custom-checkbox" type="checkbox" name="skipEffectiveness" id="skipEffectiveness" <?php
              if(isset($skipEffectiveness) && $skipEffectiveness === "on")
               echo "checked";            

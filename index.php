@@ -60,6 +60,7 @@ include_once "offcanvas.php";
           
           <button class="btn btn-outline-dark ms-3" type="submit">Filtruj</button>
         </form>
+        <div class="vr ms-3"></div>
         <button class="btn btn-outline-dark ms-3" type="button" data-bs-toggle="offcanvas" data-bs-target="#staticBackdrop">
           Alerty i eventy
         </button>

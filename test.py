@@ -1,8 +1,10 @@
 import paho.mqtt.client as mqtt
 import mysql.connector as mysql
 import json
-import schedule
-import time
+import os
+from dotenv.main import load_dotenv
+
+load_dotenv()
 
 
 # The callback for when the client receives a CONNACK response from the server.
@@ -26,10 +28,10 @@ def on_message(client, userdata, msg):
 
   if DATA is not None:
     connection = mysql.connect(
-    host="sql7.freesqldatabase.com",
-    user="sql7756592",
-    password="3pUyiJRjCG",
-    database="sql7756592"
+    host=os.getenv("DB_HOST"),
+    user=os.getenv("DB_USER"),
+    password=os.getenv("DB_PASSWORD"),
+    database=os.getenv("DB_DATABASE"),
     )
 
     if connection.is_connected():
@@ -100,7 +102,6 @@ def on_message(client, userdata, msg):
     else:
       print("MySQL connection is still open")
 
-#schedule.every().day().at("23:00").do(completedata)
 
         
 # MQTT client setup

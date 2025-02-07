@@ -1,5 +1,5 @@
 <?php
-require_once __DIR__ . "/controller.php";
+require_once "controller.php";
 include_once "offcanvas.php";
 ?>
 <!DOCTYPE html>

@@ -76,9 +76,9 @@ function createOeeLineChart(id, xData, oeeData, qualityData) {
       range: [0, 100],
       showline: true
     },
-    margin: { t: 40, r: 20, b: 40, l: 50 },
-    height: 600,
-    width: 900
+    margin: { t: 60, r: 20, b: 30, l: 40 },
+    height: 390,
+    width: 750
   };
 
   const config = { responsive: true }; 
@@ -100,40 +100,15 @@ function createPieChart(id, goodProducts, badProducts, canceledProducts) {
   // Układ wykresu
   const layout = {
     title: 'Status wyrobów',
-    height: 700,
+    height: 450,
     width: 700,
-    margin: { t: 160, r: 70, b: 40, l: 70 }
+    margin: { t: 40, r: 70, b: 40, l: 70 }
   };
 
   const config = { responsive: true }; 
   Plotly.newPlot(id, data, layout, config);
 }
 
-function createHorizontalBarChart(id, labels, values, colors) {
-  const data = [{
-    type: 'bar',
-    x: values, 
-    y: labels,
-    orientation: 'h',
-    marker: { color: colors },
-    text: values.map(String),
-    textposition: 'auto'
-  }];
-
-  const layout = {
-    title: 'Horyzontalny Bar Chart',
-    xaxis: { title: 'Wartość' },
-    yaxis: { title: 'Kategorie' },
-    margin: { t: 40, r: 20, b: 40, l: 100 }, // Większy lewy margines dla długich etykiet
-    height: 400,
-    width: 600,
-    paper_bgcolor: 'lightgray', // Tło całego wykresu
-    plot_bgcolor: 'white' // Tło obszaru danych
-  };
-
-  const config = { responsive: true }; // Responsywność
-  Plotly.newPlot(id, data, layout, config);
-}
 
 
 createIndicator("oeeIndicator", Math.round(oeeValues[0] * oeeValues[1] * oeeValues[2] * 100), "OEE");
@@ -141,7 +116,7 @@ createIndicator("qualityIndicator", parseInt(oeeValues[0] * 100), "Jakość");
 createIndicator("availabilityIndicator", parseInt(oeeValues[1] * 100), "Dostępność");
 
 if(oeeValues[2] === 1){
-  createIndicator("effectivenessIndicator", null ,"Wydajność");
+  createIndicator("effectivenessIndicator", null, "Wydajność");
 }else{
   createIndicator("effectivenessIndicator", parseInt(oeeValues[2] * 100), "Wydajność");
 }

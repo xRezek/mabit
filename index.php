@@ -1,9 +1,10 @@
 <?php
-require_once "controller.php";
-include_once "offcanvas.php";
+  require_once "controller.php";
+  include_once "offcanvas.php";
+  #dump($_SERVER);
 ?>
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pl-PL">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -33,10 +34,11 @@ include_once "offcanvas.php";
             <option value="%%" selected>Wszystkie</option>
             <?php
               $columnMachineCount = count($columnMachine);
-              foreach ($columnMachine as $machine) {
-                $machine = htmlspecialchars($machine, ENT_QUOTES, 'UTF-8');
-                $selected = isset($get) && isset($get['machine']) && $get['machine'] === $machine ? 'selected' : '';
-                echo "<option value='$machine' $selected>$machine</option>";
+              $option = $machine;
+              foreach ($columnMachine as $option) {
+                $option = htmlspecialchars($option, ENT_QUOTES, 'UTF-8');
+                $selected = isset($get) && isset($get['machine']) && $get['machine'] === $option ? 'selected' : '';
+                echo "<option value='$option' $selected>$option</option>";
               }
             ?>
           </select>
@@ -77,13 +79,56 @@ include_once "offcanvas.php";
           <div id="effectivenessIndicator"  class="col-md-3"></div>
         </div>
         <div class="row">
-          <div id="oeeLineChart" class="col"></div>
+          <div class="col mt-5 ms-3">
+            <p class="h3">Historia</p>
+            <table class="table table-border table-striped text-center">
+              <thead>
+                <tr>
+                  <th scope="col" class="custom-header">Maszyna</th>
+                  <th scope="col" class="custom-header">Status</th>
+                  <th scope="col" class="custom-header">Program</th>
+                  <th scope="col" class="custom-header">Czas cyklu</th>
+                  <th scope="col" class="custom-header">Skala</th>
+                  <th scope="col" class="custom-header">Znacznik czasowy</th>
+                </tr>
+              </thead>
+              <tbody>
+                <?php
+                  if($machine === "%%"){
+                    echo "<tr><td colspan='6'>Wybierz konkretną maszynę aby zobaczyć historię</td></tr>";
+                  }
+                  elseif($resultGetHistory->num_rows === 0){
+                    echo "<tr><td colspan='6'>Brak danych</td></tr>";
+                  }
+                  else{
+                    while($row = $resultGetHistory->fetch_row()){
+                      echo "
+                            <tr>
+                              <td>$row[0]</td>
+                              <td>$row[1]</td>
+                              <td>$row[2]</td>
+                              <td>$row[3]s</td>
+                              <td>$row[4]</td>
+                              <td>$row[5]</td>
+                            </tr>
+                          ";
+                    }
+                  }
+                  //todo wykonać paginację
+                ?>
+                
+              </tbody>
+            </table>
+          </div>
         </div>
       </div>
       <div class="col-1"></div>
       <div class="col-md-5">
         <div class="row">
           <div id="productStatusChart" class="col"></div>
+        </div>
+        <div class="row">
+          <div id="oeeLineChart" class="col"></div>
         </div>
       </div>
     </div>

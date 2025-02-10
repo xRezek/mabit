@@ -66,6 +66,12 @@
     $resultGetEvents = $stmtGetEvents->get_result();
     $stmtGetEvents->close();
 
+    $stmtGetHistory = $conn->prepare($sqlGetHistory);
+    $stmtGetHistory->bind_param("sss", $machine, $dateFrom, $dateTo);
+    $stmtGetHistory->execute();
+    $resultGetHistory = $stmtGetHistory->get_result();
+    $stmtGetHistory->close();
+
     
 
     $resultMachines = $conn->query($sqlGetMachines);

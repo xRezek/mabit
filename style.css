@@ -22,8 +22,8 @@
   background-color: #ff4d06;
 }
 
-thead.custom-header {
-  background-color: #ff4d06;
+.custom-header {
+  background-color: #ff4d06 !important;	
 }
 
 .offcanvas-custom-width {

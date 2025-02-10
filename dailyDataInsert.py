@@ -57,8 +57,9 @@ def insert_daily_data():
   connection.close()
 
 
-schedule.every().day.at("22:04").do(insert_daily_data)
+schedule.every().day.at("23:00").do(insert_daily_data)
 
 while True:
+  print("Running schedule")
   schedule.run_pending()
   time.sleep(1)

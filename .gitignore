@@ -1,3 +1,6 @@
 .env
 dbconfig.php
 debug.php
+
+
+/.vscode

@@ -1,12 +1,5 @@
 <?php
 
-  $sqlQueryGetOEEparams = "SELECT 
-                            avg(quality), 
-                            avg(availability), 
-                            avg(effectiveness)
-                          FROM 
-                            daily_data"; //* zapydanie obliczające średnią wartość dla wszystkich wskaźników OEE
-
   $sqlGetQuality = "SELECT
                       ROUND(
                           (

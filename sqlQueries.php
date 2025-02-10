@@ -99,4 +99,4 @@
                       produkty
                     WHERE
                       status IN (1,2,3) AND
-                      machineId LIKE ? AND timestamp BETWEEN ? AND ? LIMIT 10 OFFSET 10;";
+                      machineId LIKE ? AND timestamp BETWEEN ? AND ?;";

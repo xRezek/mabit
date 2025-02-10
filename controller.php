@@ -13,6 +13,11 @@
   $dateTo = $get['dateTo'] ?? date("Y-m-d\TH:i");
   $skipEffectiveness = $get['skipEffectiveness'] ?? null;
 
+  if($dateFrom > $dateTo){
+    $temp = $dateFrom;
+    $dateFrom = $dateTo;
+    $dateTo = $temp;
+  }
 
 
   $conn = new mysqli($host,$user,$password,$database);

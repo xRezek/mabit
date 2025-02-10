@@ -45,11 +45,3 @@ thead.custom-header {
   border-spacing: 0;
 }
 
-.custom-checkbox input[type="checkbox"] {
-  width: 20px;  /* Zwiększona szerokość */
-  height: 20px; /* Zwiększona wysokość */
-}
-
-.custom-checkbox input[type="checkbox"]:checked {
-  accent-color: black; /* Współczesne przeglądarki */
-}

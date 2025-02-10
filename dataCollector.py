@@ -28,10 +28,10 @@ def on_message(client, userdata, msg):
 
   if DATA is not None:
     connection = mysql.connect(
-    host=os.getenv("DB_HOST"),
-    user=os.getenv("DB_USER"),
-    password=os.getenv("DB_PASSWORD"),
-    database=os.getenv("DB_DATABASE"),
+    host = os.getenv("DB_HOST"),
+    user = os.getenv("DB_USER"),
+    password = os.getenv("DB_PASSWORD"),
+    database = os.getenv("DB_DATABASE"),
     )
 
     if connection.is_connected():

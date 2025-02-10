@@ -10,12 +10,12 @@
         <div class="col">
           <p class="h6">Alerty</p>
           <table class="table table-border table-striped text-center">
-            <thead class="table-info">
+            <thead >
               <tr>
-                <th scope="col">Maszyna</th>
-                <th scope="col">Treść komunikatu</th>
-                <th scope="col">Kod</th>
-                <th scope="col">Czas wystąpienia</th>
+                <th scope="col" class="custom-header">Maszyna</th>
+                <th scope="col" class="custom-header">Treść komunikatu</th>
+                <th scope="col" class="custom-header">Kod</th>
+                <th scope="col" class="custom-header">Czas wystąpienia</th>
               </tr>
             </thead>
             <tbody>
@@ -37,12 +37,12 @@
         <div class="col">
         <p class="h6">Eventy</p>
           <table class="table table-border table-striped text-center">
-            <thead class="table-info">
+            <thead>
               <tr>
-                <th scope="col">Maszyna</th>
-                <th scope="col">Treść komunikatu</th>
-                <th scope="col">Kod</th>
-                <th scope="col">Czas wystąpienia</th>
+                <th scope="col" class="custom-header">Maszyna</th>
+                <th scope="col" class="custom-header">Treść komunikatu</th>
+                <th scope="col" class="custom-header">Kod</th>
+                <th scope="col" class="custom-header">Czas wystąpienia</th>
               </tr>
             </thead>
             <tbody>

@@ -98,5 +98,16 @@
                     FROM
                       produkty
                     WHERE
-                      status IN (1,2,3) AND
-                      machineId LIKE ? AND timestamp BETWEEN ? AND ?;";
+                      status IN (1,2,3) 
+                      AND machineId LIKE ? AND timestamp BETWEEN ? AND ?
+                    LIMIT ?
+                    OFFSET ?;";
+  
+  $sqlGetHistoryPage = "SELECT 
+                          id 
+                        FROM 
+                          produkty 
+                        WHERE 
+                          status IN (1,2,3) 
+                        AND machineId LIKE ? 
+                        AND timestamp BETWEEN ? AND ?;"; 

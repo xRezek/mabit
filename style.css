@@ -45,3 +45,18 @@
   border-spacing: 0;
 }
 
+.pagination-item{
+   background-color: #ff4d06;
+    color: black;  
+}
+
+.pagination-item:hover{
+  background-color: #000;
+  color: white;
+}
+
+.pagination-item.active {
+  background-color: #000 !important;
+  border-color: #000 !important;
+  color: white !important;
+}

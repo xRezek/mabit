@@ -76,9 +76,9 @@ function createOeeLineChart(id, xData, oeeData, qualityData) {
       range: [0, 100],
       showline: true
     },
-    margin: { t: 60, r: 20, b: 30, l: 40 },
+    margin: { t: 60, r: 60, b: 30, l: 40 },
     height: 390,
-    width: 750
+    width: 700
   };
 
   const config = { responsive: true }; 

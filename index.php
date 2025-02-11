@@ -2,6 +2,7 @@
   require_once "controller.php";
   include_once "offcanvas.php";
   #dump($_SERVER);
+  #dump($totalPages);
 ?>
 <!DOCTYPE html>
 <html lang="pl-PL">
@@ -114,11 +115,21 @@
                           ";
                     }
                   }
-                  //todo wykonać paginację
                 ?>
-                
               </tbody>
             </table>
+            <?php if($totalPages > 1 and $machine !== "%%"):?>
+            <nav class =" mt-4">
+              <ul class="pagination justify-content-center">
+                <?php
+                  for($i = 1; $i <= $totalPages; $i++){
+                    $active = $i == $page ? 'active' : '';
+                    echo "<li class='page-item'><a class='page-link pagination-item $active' href='?machine=$machine&dateFrom=$dateFrom&dateTo=$dateTo&page=$i'>$i</a></li>";
+                  }
+                ?>
+              </ul>
+            </nav> 
+            <?php endif;?>
           </div>
         </div>
       </div>

@@ -66,12 +66,34 @@
     $resultGetEvents = $stmtGetEvents->get_result();
     $stmtGetEvents->close();
 
+    
+
+
+
+
+    $limit = 10;
+    isset($get['page']) ? $page = $get['page'] : $page = 1;
+    
+    if(isset($get['page'])){
+      $offset = ($get['page'] - 1) * $limit;
+    }
+    else{
+      $offset = 0;
+    }
+    
+    $stmtGetHistoryPage = $conn->prepare($sqlGetHistoryPage);
+    $stmtGetHistoryPage->bind_param("sss", $machine, $dateFrom, $dateTo);
+    $stmtGetHistoryPage->execute();
+    $resultGetHistoryPages = $stmtGetHistoryPage->get_result()->num_rows;
+    $stmtGetHistoryPage->close();
+    
+    $totalPages = ceil($resultGetHistoryPages / $limit);
+
+
     $stmtGetHistory = $conn->prepare($sqlGetHistory);
-    $stmtGetHistory->bind_param("sss", $machine, $dateFrom, $dateTo);
+    $stmtGetHistory->bind_param("sssii", $machine, $dateFrom, $dateTo, $limit, $offset);
     $stmtGetHistory->execute();
     $resultGetHistory = $stmtGetHistory->get_result();
-    $stmtGetHistory->close();
-
     
 
     $resultMachines = $conn->query($sqlGetMachines);

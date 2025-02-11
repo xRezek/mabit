@@ -90,7 +90,6 @@ def on_message(client, userdata, msg):
             print("Record inserted successfully to maszyny")
           else:
             print("Record not inserted")
-
     else:
       print("Connection failed")
     

@@ -1,8 +1,6 @@
 <?php
   require_once "controller.php";
   include_once "offcanvas.php";
-  #dump($_SERVER);
-  #dump($totalPages);
 ?>
 <!DOCTYPE html>
 <html lang="pl-PL">

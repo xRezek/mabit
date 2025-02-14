@@ -3,7 +3,6 @@
   require_once 'dbconfig.php'; //* dane do połączenia z bazą
   require_once 'sqlQueries.php'; //* plik z zapytaniami sql
   
-  include 'debug.php';
 
 
   $get = $_GET;

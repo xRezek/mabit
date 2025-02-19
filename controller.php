@@ -6,6 +6,7 @@
 
 
   $get = $_GET;
+  $server = $_SERVER;
 
   $machine = $get['machine'] ?? "%%";
   $dateFrom = $get['dateFrom'] ?? date("Y-m-d\TH:i", strtotime('-24 hours'));

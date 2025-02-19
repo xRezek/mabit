@@ -1,6 +1,8 @@
 <?php
   require_once "controller.php";
   include_once "offcanvas.php";
+  include_once "debug.php";
+  #dump($server);
 ?>
 <!DOCTYPE html>
 <html lang="pl-PL">

@@ -1,6 +1,8 @@
 <?php
   require_once "controller.php";
   include_once "offcanvas.php";
+  include_once "debug.php";
+  #dump($server);
 ?>
 <!DOCTYPE html>
 <html lang="pl-PL">
@@ -122,7 +124,8 @@
                 <?php
                   for($i = 1; $i <= $totalPages; $i++){
                     $active = $i == $page ? 'active' : '';
-                    echo "<li class='page-item'><a class='page-link pagination-item $active' href='?machine=$machine&dateFrom=$dateFrom&dateTo=$dateTo&page=$i'>$i</a></li>";
+                    $skipEffectivenessPagination = isset($get['skipEffectiveness']) ? "&skipEffectiveness=on" : "";
+                    echo "<li class='page-item'><a class='page-link pagination-item $active' href='?machine=$machine&dateFrom=$dateFrom&dateTo=$dateTo" . "$skipEffectivenessPagination&page=$i'>$i</a></li>";
                   }
                 ?>
               </ul>

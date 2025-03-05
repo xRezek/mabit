@@ -1,263 +1,171 @@
-# Wprowadzenie
+# Introduction
 
-Dokumentacja opisuje system monitorowania wydajności maszyn, który
-składa się z kilku modułów:
+The documentation describes a machine performance monitoring system that consists of several modules:
 
--   **Backend:** Skrypty w Pythonie, odpowiedzialne za zbieranie,
-    agregowanie oraz zapisywanie danych do bazy MySQL.
+- **Backend:** Python scripts responsible for collecting, aggregating, and saving data to a MySQL database.
+- **Frontend:** JavaScript scripts responsible for data visualization using the Plotly library.
+- **PHP Modules:** Files responsible for handling application logic, database connection configuration, and generating the user interface.
 
--   **Frontend:** Skrypty w JavaScript odpowiedzialne za wizualizację
-    danych przy użyciu biblioteki Plotly.
-
--   **Moduły PHP:** Pliki odpowiedzialne za obsługę logiki aplikacji,
-    konfigurację połączenia z bazą oraz generowanie interfejsu
-    użytkownika.
-
-# Wymagania systemowe
+# System Requirements
 
 ## Backend
 
--   Python 3.x
-
--   Biblioteki: `python-dotenv`, `schedule`, `paho-mqtt`, `pymysql`
-
--   Serwer bazy danych MySQL
+- Python 3.x
+- Libraries: `python-dotenv`, `schedule`, `paho-mqtt`, `pymysql`
+- MySQL database server
 
 ## Frontend
 
--   Przeglądarka internetowa z obsługą JavaScript
-
--   Biblioteka `Plotly.js wersja 2.35.2`
-
--   Biblioteka `Bootstrap wersja 5.3.3`
+- Web browser with JavaScript support
+- Library `Plotly.js version 2.35.2`
+- Library `Bootstrap version 5.3.3`
 
 ## PHP
 
--   Serwer WWW z obsługą PHP w wersji 8.2.12 (np. Apache)
+- Web server with PHP support version 8.2.12 (e.g., Apache)
 
-# Opis modułów i plików projektu
+# Description of Project Modules and Files
 
-## Pliki Python
+## Python Files
 
 ### `dailyDataInsert.py`
 
-Skrypt `dailyDataInsert.py` odpowiada za:
+The `dailyDataInsert.py` script is responsible for:
 
--   Ładowanie zmiennych środowiskowych z pliku `.env` przy użyciu
-    biblioteki `python-dotenv`.
-
--   Nawiązanie połączenia z bazą danych MySQL.
-
--   Wykonanie zapytania SQL, które agreguje dane z tabel `produkty` oraz
-    `machine_status`. Obliczane są m.in. wskaźniki:
-
-    -   **Jakość** – stosunek liczby produktów o statusie 1 do ogólnej
-        liczby produktów.
-
-    -   **Dostępność** – stosunek czasu pracy maszyny do całkowitego
-        czasu.
-
-    -   **Wydajność** – średnia wartość wskaźnika skalowania.
-
--   Wstawienie zagregowanych danych do tabeli `daily_data`.
-
--   Automatyczne uruchamianie zadania codziennie o godzinie 23:00 przy
-    użyciu biblioteki `schedule`.
+- Loading environment variables from the `.env` file using the `python-dotenv` library.
+- Establishing a connection to the MySQL database.
+- Executing an SQL query that aggregates data from the `products` and `machine_status` tables. Indicators such as:
+    - **Quality** – the ratio of products with status 1 to the total number of products.
+    - **Availability** – the ratio of machine operating time to total time.
+    - **Performance** – the average scaling factor value.
+- Inserting aggregated data into the `daily_data` table.
+- Automatically running the task daily at 23:00 using the `schedule` library.
 
 ### `dataCollector.py`
 
-Skrypt `dataCollector.py` odpowiada za:
+The `dataCollector.py` script is responsible for:
 
--   Połączenie z brokerem MQTT (np. `broker.emqx.io`) oraz subskrypcję
-    tematu `ZONE_01/#`.
+- Connecting to the MQTT broker (e.g., `broker.emqx.io`) and subscribing to the `ZONE_01/#` topic.
+- Receiving MQTT messages, parsing the transmitted JSON, and validating the format.
+- Inserting data into the MySQL database using the `pymysql` library. Operations include:
+    - Inserting alarms into the `alarms` table.
+    - Inserting events into the `events` table.
+    - Inserting product information into the `products` table.
+    - Inserting machine status into the `machine_status` table.
+    - Adding a new record to the `machines` table if the machine does not exist in the database.
+- Handling errors related to incorrect JSON format and database connection errors.
 
--   Odbieranie wiadomości MQTT, parsowanie przesyłanego JSON-a oraz
-    walidację formatu.
-
--   Wstawianie danych do bazy MySQL przy użyciu biblioteki `pymysql`.
-    Operacje obejmują:
-
-    -   Wstawianie alarmów do tabeli `alarmy`.
-
-    -   Wstawianie eventów do tabeli `events`.
-
-    -   Wstawianie informacji o produktach do tabeli `produkty`.
-
-    -   Wstawianie statusu maszyny do tabeli `machine_status`.
-
-    -   Dodawanie nowego rekordu do tabeli `maszyny` w przypadku, gdy
-        maszyna nie istnieje w bazie.
-
--   Obsługę błędów związanych z niepoprawnym formatem JSON oraz błędami
-    połączenia z bazą.
-
-## Pliki JavaScript
+## JavaScript Files
 
 ### `index.js`
 
-Plik `index.js` odpowiada za wizualizację danych na stronie internetowej
-przy użyciu biblioteki Plotly. Główne funkcje to:
+The `index.js` file is responsible for data visualization on the website using the Plotly library. Main functions include:
 
--   **createIndicator:** Tworzy wykres wskaźnikowy (gauge), prezentujący
-    wartości OEE, jakość, dostępność oraz wydajność. Kolor wskaźnika
-    zależy od przedziału wartości. Przyjmuje 3 argumenty id, value oraz
-    title gdzie id to id diva w którym będzie rysowany wykres, value to
-    wyświetlana wartość a title to wyświetlany tytuł wskaźnika.
+- **createIndicator:** Creates a gauge chart displaying OEE, quality, availability, and performance values. The indicator color depends on the value range. It takes 3 arguments: id, value, and title, where id is the id of the div where the chart will be drawn, value is the displayed value, and title is the displayed indicator title.
+- **createOeeLineChart:** Generates a line chart showing changes in OEE and quality indicators over time. It takes 4 arguments: id, where the chart will be located, xData for X-axis values (in this case, individual days), and oeeData and qualityData for Y-axis values (OEE and quality indicator values).
+- **createPieChart:** Creates a pie chart illustrating the status of products (e.g., Good, Bad, Canceled). The function takes 4 arguments: id, where the chart will be located, goodProducts for the number of good products, badProducts for the number of bad products, and canceledProducts for the number of canceled products.
 
--   **createOeeLineChart:** Generuje wykres liniowy pokazujący zmiany
-    wskaźników OEE oraz jakości w czasie. Pzyjmuje 4 argumenty gdzie id
-    to id, w którym będzie znajdować się wykres xData to wartości na osi
-    X (w tym przypadku poszczególne dni) a oeeData i qualityData to
-    wartości na osi Y (wartości wksaźnika OEE i jakości).
+## PHP Files
 
--   **createPieChart:** Tworzy wykres kołowy ilustrujący status
-    produktów (np. Dobre, Niedobre, Anulowane). Funkcja przyjmuje 4
-    argumenty id to id, w którym będzie znajdować się wykres,
-    goodProducts to ilość wyrobów dobrych, badProducts to ilość wyrobów
-    złych a canceledProducts to ilość wyrobów anulowanych.
-
-## Pliki PHP
-
-W projekcie występuje kilka plików PHP, które pełnią rolę konfiguracji,
-logiki aplikacji oraz generowania interfejsu.
+The project includes several PHP files that serve configuration, application logic, and interface generation roles.
 
 ### `controller.php`
 
-Plik `controller.php` zawiera główną logikę sterującą aplikacją. Może on
-obsługiwać żądania HTTP, przetwarzać dane oraz kierować przepływem
-informacji między frontendem a backendem.
+The `controller.php` file contains the main application logic. It can handle HTTP requests, process data, and direct the flow of information between the frontend and backend.
 
 ### `dbconfig.php`
 
-Plik `dbconfig.php` zawiera konfigurację połączenia z bazą danych, w tym
-ustawienia takie jak:
+The `dbconfig.php` file contains the database connection configuration, including settings such as:
 
--   Host bazy danych
+- Database host
+- Username
+- Password
+- Database name
 
--   Nazwa użytkownika
-
--   Hasło
-
--   Nazwa bazy danych
-
-Plik ten jest wykorzystywany przez inne skrypty PHP do nawiązania
-połączenia z bazą danych.
+This file is used by other PHP scripts to establish a connection to the database.
 
 ### `offcanvas.php`
 
-Plik `offcanvas.php` odpowiada za generowanie elementów interfejsu
-użytkownika, takich jak menu off-canvas czy panele boczne. Może być
-używany do nawigacji lub wyświetlania dodatkowych opcji w aplikacji.
+The `offcanvas.php` file is responsible for generating user interface elements, such as off-canvas menus or side panels. It can be used for navigation or displaying additional options in the application.
 
 ### `index.php`
 
-Plik `index.php` stanowi główny punkt wejścia dla aplikacji webowej.
-Jego zadania obejmują:
+The `index.php` file is the main entry point for the web application. Its tasks include:
 
--   Inicjalizację sesji oraz konfigurację środowiska.
-
--   Łączenie części widokowych i modułów aplikacji, w tym dołączanie
-    odpowiednich skryptów CSS i JavaScript.
-
--   Renderowanie dynamicznej zawartości strony, pobieranie danych z bazy
-    lub innych źródeł oraz prezentowanie ich użytkownikowi.
+- Initializing the session and configuring the environment.
+- Combining view parts and application modules, including attaching appropriate CSS and JavaScript scripts.
+- Rendering dynamic page content, fetching data from the database or other sources, and presenting it to the user.
 
 ### `sqlQueries.php`
 
-Plik `sqlQueries.php` zawiera definicje zapytań SQL wykorzystywanych
-przez aplikację. Do jego głównych zadań należy:
+The `sqlQueries.php` file contains definitions of SQL queries used by the application. Its main tasks include:
 
--   Przechowywanie szablonów zapytań SQL, które są wykorzystywane do
-    pobierania, wstawiania, aktualizacji lub usuwania danych w bazie.
+- Storing SQL query templates used for retrieving, inserting, updating, or deleting data in the database.
+- Allowing easy modification of queries in one place, contributing to better code maintenance.
+- Integrating with PHP modules that execute these queries to ensure consistency and centralization of data access logic.
 
--   Umożliwienie łatwej modyfikacji zapytań w jednym miejscu, co
-    przyczynia się do lepszej konserwacji kodu.
-
--   Integracja z modułami PHP, które wykonują te zapytania, aby zapewnić
-    spójność i centralizację logiki dostępu do danych.
-
-# Instalacja i konfiguracja
+# Installation and Configuration
 
 ## Backend
 
-1.  Zainstaluj wymagane biblioteki:
+1. Install the required libraries:
 
-    ``` bash
+    ```bash
     pip install python-dotenv schedule paho-mqtt pymysql
     ```
 
-2.  Utwórz plik `.env` z konfiguracją połączenia do bazy danych:
+2. Create a `.env` file with the database connection configuration:
 
-    ``` bash
-    DB_HOST=adres_serwera_bazy
-    DB_USER=uzytkownik
-    DB_PASSWORD=haslo
-    DB_DATABASE=nazwa_bazy
+    ```bash
+    DB_HOST=database_server_address
+    DB_USER=username
+    DB_PASSWORD=password
+    DB_DATABASE=database_name
     DB_PORT=3306
     ```
 
-3.  Uruchom skrypty:
+3. Run the scripts:
 
-    -   `dailyDataInsert.py` – agregacja i wstawianie danych codziennie
-        o 23:00.
-
-    -   `dataCollector.py` – odbieranie wiadomości MQTT i zapisywanie
-        danych do bazy.
+    - `dailyDataInsert.py` – aggregation and data insertion daily at 23:00.
+    - `dataCollector.py` – receiving MQTT messages and saving data to the database.
 
 ## Frontend
 
-1.  Dołącz plik `index.js` do strony HTML.
+1. Include the `index.js` file in the HTML page.
 
-    ``` html
+    ```html
     <script src="index.js" defer></script>
     ```
 
-2.  Upewnij się, że strona zawiera elementy HTML z odpowiednimi
-    atrybutami (np. `data-json`), z których pobierane są dane do
-    wykresów.
+2. Ensure the page contains HTML elements with appropriate attributes (e.g., `data-json`) from which data for the charts is retrieved.
 
-3.  Załaduj bibliotekę Plotly i skrypt js potrzebny do działania
-    bootstrapa:
+3. Load the Plotly library and the necessary Bootstrap script:
 
-    ``` html
+    ```html
     <script src="https://cdn.plot.ly/plotly-2.35.2.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
     ```
 
-4.  W sekcji head należy podpiąć css Bootstrapa:
+4. In the head section, include the Bootstrap CSS:
 
-    ``` html
+    ```html
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
     ```
 
 ## PHP
 
-1.  Upewnij się, że pliki `controller.php`, `dbconfig.php`,
-    `offcanvas.php`, `index.php` oraz `sqlQueries.php` są umieszczone w
-    odpowiednich katalogach projektu.
+1. Ensure that the `controller.php`, `dbconfig.php`, `offcanvas.php`, `index.php`, and `sqlQueries.php` files are placed in the appropriate project directories.
 
-2.  Skonfiguruj serwer WWW tak, aby poprawnie interpretował pliki PHP.
+2. Configure the web server to correctly interpret PHP files.
 
-3.  Przejrzyj plik `dbconfig.php` i zaktualizuj ustawienia bazy danych
-    według potrzeb.
+3. Review the `dbconfig.php` file and update the database settings as needed.
 
-# Podsumowanie
+# Summary
 
-System monitorowania wydajności maszyn integruje kilka technologii:
+The machine performance monitoring system integrates several technologies:
 
--   Skrypty Pythona (`dailyDataInsert.py` oraz `dataCollector.py`)
-    odpowiadają za zbieranie, przetwarzanie i zapisywanie danych do
-    bazy.
+- Python scripts (`dailyDataInsert.py` and `dataCollector.py`) are responsible for collecting, processing, and saving data to the database.
+- The JavaScript script (`index.js`) processes data from the database and generates interactive charts using the Plotly library.
+- PHP components (`controller.php`, `dbconfig.php`, `offcanvas.php`, `index.php`, and `sqlQueries.php`) support application logic, database connection configuration, and user interface generation.
 
--   Skrypt JavaScript (`index.js`) przetwarza dane z bazy i generuje
-    interaktywne wykresy przy użyciu biblioteki Plotly.
-
--   Komponenty PHP (`controller.php`, `dbconfig.php`, `offcanvas.php`,
-    `index.php` oraz `sqlQueries.php`) wspierają logikę aplikacji,
-    konfigurację połączenia z bazą oraz generowanie interfejsu
-    użytkownika.
-
-Dzięki powyższej integracji możliwe jest bieżące monitorowanie
-kluczowych wskaźników (takich jak OEE, jakość, dostępność i wydajność),
-co pozwala na szybkie reagowanie i podejmowanie decyzji opartych na
-aktualnych danych.
+Thanks to this integration, it is possible to continuously monitor key indicators (such as OEE, quality, availability, and performance), allowing for quick responses and data-driven decision-making.
